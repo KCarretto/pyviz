@@ -12,7 +12,11 @@ apt-get update -y && apt-get install -y graphviz || yum install -y graphviz || d
 The following code can be used to generate a .dot file compatible with [Graphviz](https://graphviz.org/). Use [Graphviz](https://graphviz.org/) to render diagrams into several formats from a .dot file.
 
 ## Diagram
-![Example Diagram](https://imgur.com/FDsCYST.png)
+Render the following diagram (requires [Graphviz](https://graphviz.org/)) by running:
+```bash
+dot -Tpng -o docs/source/diagrams/simple_example.png docs/source/diagrams/simple_example.dot
+```
+![Example Diagram](/docs/source/diagrams/simple_example.png)
 
 ## Code
 ```python3
