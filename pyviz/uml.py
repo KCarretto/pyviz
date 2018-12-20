@@ -3,7 +3,7 @@ from typing import Dict, List, NamedTuple, Optional
 from enum import Enum
 
 from pyviz.base import IRenderable, SimpleRenderable, IRenderComponent, SimpleRenderComponent
-from pyviz.config import GraphConfig
+from pyviz.config import GraphConfig, UMLAttributes
 from pyviz.fmt import DotFormatter
 
 
@@ -61,12 +61,12 @@ class UMLModuleFunction(IRenderable):
         """
         return {"shape": "oval"}
 
-    def render_dot(self, fmt: DotFormatter) -> str:
+    def render_label(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: A dot formatted function signature label.
         """
-        params = ", ".join([param.dot_fmt for param in self.params])
+        params = ", ".join([param.render(fmt) for param in self.params])
         label = f"{self.name}({params}): {fmt.color_type(self.type)}"
 
         if self.is_awaitable:
@@ -93,12 +93,12 @@ class UMLFunction(IRenderComponent):
         self.is_abstract = False
         super().__init__(*args, **kwargs)
 
-    def render_dot(self, fmt: DotFormatter) -> str:
+    def render(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: A dot formatted function signature label.
         """
-        params = ", ".join([param.dot_fmt for param in self.params])
+        params = ", ".join([param.render(fmt) for param in self.params])
         label = f"{self.name}({params})"
 
         if self.is_abstract:
@@ -133,13 +133,13 @@ class UMLClass(IRenderable):
 
     def __init__(
         self,
-        *,
+        *args,
         properties: List[UMLProperty] = None,
         methods: List[UMLMethod] = None,
         class_methods: List[UMLClassMethod] = None,
         **kwargs,
     ):
-        super().__init__(**kwargs)
+        super().__init__(*args, **kwargs)
 
         if not properties:
             properties = []
@@ -158,6 +158,12 @@ class UMLClass(IRenderable):
             Dict[str, str]: mapping of UMLClass attributes.
         """
         return {"shape": "record"}
+
+    def get_attributes(self, uml_config: UMLAttributes) -> Optional[Dict[str, str]]:
+        """
+        Override to return UMLClass specific attributes.
+        """
+        return uml_config.uml_class
 
     def render_label(self, fmt: DotFormatter) -> str:
         """

@@ -1,30 +1,32 @@
 digraph g {
-	label="Test Graph"
-
+	label="PyViz Graph"
+	labelloc="top"
+	
 	// Objects
 	Country [label=< {<B>Country</B>
 		|<B>Properties</B>
 			<BR/><BR/>name: <FONT COLOR="mediumseagreen">str</FONT>
 			<BR ALIGN="LEFT"/>population: <FONT COLOR="mediumseagreen">int</FONT>
 	} > shape="record"];
-
 	IPerson [label=< {<B>IPerson</B>
 		|<B>Properties</B>
 			<BR/><BR/>name: <FONT COLOR="mediumseagreen">str</FONT>
 			<BR ALIGN="LEFT"/>age: <FONT COLOR="mediumseagreen">int</FONT>
+		|<B>Abstract Methods</B>
+			<BR/><BR/><I>celebrate(amount: <FONT COLOR="mediumseagreen">int</FONT>)</I>: <FONT COLOR="red">None</FONT>
 	} > shape="record"];
-
 	Citizen [label=< {<B>Citizen</B>
+		|<B>Properties</B>
+			<BR/><BR/>happiness: <FONT COLOR="mediumseagreen">int</FONT>
+		|<B>Methods</B>
+			<BR/><BR/>celebrate(amount: <FONT COLOR="mediumseagreen">int</FONT>): <FONT COLOR="red">None</FONT>
 	} > shape="record"];
-
-
+	
 	// Dependencies
-	edge [style=dashed]
-
+	edge [style="dashed"];
 	Country -> Citizen;
-
+	
 	// Inheritance
-	edge [style=dashed arrowhead=empty]
-
+	edge [style="dashed" arrowhead="empty"];
 	Citizen -> IPerson;
 }

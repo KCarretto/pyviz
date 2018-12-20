@@ -18,7 +18,7 @@ class GraphAttributes(NamedTuple):
     This object stores global attributes that can be applied to the graph.
     """
 
-    graph: Optional[Dict[str, str]] = {}
+    graph: Optional[Dict[str, str]] = dict(label="PyViz Graph", labelloc="top")
     default_edge: Optional[Dict[str, str]] = {}
     default_node: Optional[Dict[str, str]] = {}
     dependency_edge: Dict[str, str] = dict(style="dashed")
