@@ -1,4 +1,4 @@
-from pyviz import Graph
+from pyviz import Graph, GraphConfig
 from tests.sample_objects import Country, IPerson, Citizen
 
 
@@ -6,7 +6,10 @@ def test_create_graph():
     """
     Ensure field descriptors work properly. Depends on gen_example.
     """
-    g = Graph(label="Test Graph")
+
+    config = GraphConfig.default()
+
+    g = Graph(config)
     g.add_nodes([Country, IPerson, Citizen])
 
     Citizen.implements(IPerson)
