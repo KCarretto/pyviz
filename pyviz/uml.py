@@ -120,19 +120,12 @@ class UMLClass(IRenderable):
     properties: List[UMLProperty]
     methods: List[UMLMethod]
 
-    def __init__(
-        self, *args, properties: List[UMLProperty] = None, methods: List[UMLMethod] = None, **kwargs
-    ):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
 
-        if not properties:
-            properties = []
-        if not methods:
-            methods = []
-        if not class_methods:
-            class_methods = []
-        self.properties = properties
-        self.methods = methods
+        self.properties = []
+        self.methods = []
+
+        super().__init__(*args, **kwargs)
 
     @property
     def dot_attributes(self) -> Dict[str, str]:
