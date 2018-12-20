@@ -4,7 +4,7 @@ from enum import Enum
 
 from pyviz.base import IRenderable, SimpleRenderable, IRenderComponent, SimpleRenderComponent
 from pyviz.config import GraphConfig, UMLAttributes
-from pyviz.fmt import DotFormatter
+from pyviz.fmt import DotFormatter, to_underscore
 
 
 class Param(SimpleRenderComponent):
@@ -154,6 +154,20 @@ class Class(IRenderable):
 
     properties: List[Property]
     methods: List[Method]
+
+    @property
+    def prop(self) -> Property:
+        """
+        Return this class as a property.
+        """
+        return Property(to_underscore(self.name), type=self.type)
+
+    @property
+    def param(self) -> Param:
+        """
+        Return this class as a param.
+        """
+        return Param(to_underscore(self.name), type=self.type)
 
     def __init__(self, *args, **kwargs):
 

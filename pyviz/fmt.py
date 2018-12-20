@@ -2,8 +2,20 @@
 Common formatting utilities.
 """
 from typing import Dict, List, Optional
+import re
 
 from pyviz.config import GraphConfig
+
+_first_cap_re = re.compile("(.)([A-Z][a-z]+)")
+_all_cap_re = re.compile("([a-z0-9])([A-Z])")
+
+
+def to_underscore(name: str) -> str:
+    """
+    Converts a camelCase string to underscore_format.
+    """
+    s1 = _first_cap_re.sub(r"\1_\2", name)
+    return _all_cap_re.sub(r"\1_\2", s1).lower()
 
 
 class DotFormatter:
