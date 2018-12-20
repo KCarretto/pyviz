@@ -2,54 +2,38 @@ from abc import ABCMeta, abstractmethod
 from typing import Dict, List, NamedTuple, Optional
 from enum import Enum
 
-from pyviz.base import IRenderable, ISimpleRenderable, IRenderComponent, ISimpleRenderComponent
-from pyviz.conf import ColorScheme
-from pyviz.formatting import format_abstract, format_async, color, type_color, section
+from pyviz.base import IRenderable, SimpleRenderable, IRenderComponent, SimpleRenderComponent
+from pyviz.config import GraphConfig, UMLAttributes
+from pyviz.fmt import DotFormatter
 
 
-class UMLGlobal(ISimpleRenderable):
-    """
-    Represents a global value.
-    """
-
-    @property
-    def dot_attributes(self) -> Dict[str, str]:
-        """
-        Returns:
-            Dict[str, str]: UMLGlobal attributes.
-        """
-        return {"shape": "triangle", "color": "red"}
-
-
-class UMLConstant(ISimpleRenderable):
-    """
-    Represents a global constant that does not change.
-    """
-
-    @property
-    def dot_attributes(self) -> Dict[str, str]:
-        """
-        Returns:
-            Dict[str, str]: UMLConstant attributes.
-        """
-        return {"shape": "triangle", "color": "orange"}
-
-
-class UMLVar(ISimpleRenderComponent):
+class UMLVar(SimpleRenderComponent):
     """
     Represents a variable that is either a parameter to a function, or a return value from one.
     """
 
 
-class UMLProperty(ISimpleRenderComponent):
+class UMLProperty(SimpleRenderComponent):
     """
     Represents an instance read-only attribute of an object type.
     """
 
 
-class UMLClassProperty(ISimpleRenderComponent):
+class UMLClassProperty(SimpleRenderComponent):
     """
     Represents an instance read-only attribute of an object type.
+    """
+
+
+class UMLGlobal(SimpleRenderable):
+    """
+    Represents a global value.
+    """
+
+
+class UMLConstant(SimpleRenderable):
+    """
+    Represents a global constant that does not change.
     """
 
 
@@ -77,17 +61,16 @@ class UMLModuleFunction(IRenderable):
         """
         return {"shape": "oval"}
 
-    @property
-    def dot_label(self) -> str:
+    def render_label(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: A dot formatted function signature label.
         """
-        params = ", ".join([param.dot_fmt for param in self.params])
-        label = f"{self.name}({params}): {type_color(self.type)}"
+        params = ", ".join([param.render(fmt) for param in self.params])
+        label = f"{self.name}({params}): {fmt.color_type(self.type)}"
 
         if self.is_awaitable:
-            label = format_async(label)
+            label = fmt.awaitable(label)
 
         return label
 
@@ -110,20 +93,19 @@ class UMLFunction(IRenderComponent):
         self.is_abstract = False
         super().__init__(*args, **kwargs)
 
-    @property
-    def dot_label(self) -> str:
+    def render(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: A dot formatted function signature label.
         """
-        params = ", ".join([param.dot_fmt for param in self.params])
+        params = ", ".join([param.render(fmt) for param in self.params])
         label = f"{self.name}({params})"
 
         if self.is_abstract:
-            label = format_abstract(label)
-        label = f"{label}: {type_color(self.type)}"
+            label = fmt.abstract(label)
+        label = f"{label}: {fmt.color_type(self.type)}"
         if self.is_awaitable:
-            label = format_async(label)
+            label = fmt.awaitable(label)
 
         return label
 
@@ -149,14 +131,25 @@ class UMLClass(IRenderable):
     methods: List[UMLMethod]
     class_methods: List[UMLClassMethod]
 
-    def __init__(self, *args, **kwargs):
-        """
-        Initialize defaults for this class.
-        """
-        self.properties = []
-        self.methods = []
-        self.class_methods = []
+    def __init__(
+        self,
+        *args,
+        properties: List[UMLProperty] = None,
+        methods: List[UMLMethod] = None,
+        class_methods: List[UMLClassMethod] = None,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
+
+        if not properties:
+            properties = []
+        if not methods:
+            methods = []
+        if not class_methods:
+            class_methods = []
+        self.properties = properties
+        self.methods = methods
+        self.class_methods = class_methods
 
     @property
     def dot_attributes(self) -> Dict[str, str]:
@@ -166,8 +159,13 @@ class UMLClass(IRenderable):
         """
         return {"shape": "record"}
 
-    @property
-    def dot_label(self) -> str:
+    def get_attributes(self, uml_config: UMLAttributes) -> Optional[Dict[str, str]]:
+        """
+        Override to return UMLClass specific attributes.
+        """
+        return uml_config.uml_class
+
+    def render_label(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: A dot format HTML label for this node.
@@ -177,21 +175,22 @@ class UMLClass(IRenderable):
                 lambda x: x is not None,
                 [
                     f"< {{<B>{self.name}</B>",
-                    section("Properties", [prop.dot_fmt for prop in self.properties]),
-                    section(
+                    fmt.section("Properties", [prop.render(fmt) for prop in self.properties]),
+                    fmt.section(
                         "Abstract Methods",
-                        [prop.dot_fmt for prop in self.methods if prop.is_abstract],
+                        [prop.render(fmt) for prop in self.methods if prop.is_abstract],
                     ),
-                    section(
+                    fmt.section(
                         "Abstract Class Methods",
-                        [prop.dot_fmt for prop in self.class_methods if prop.is_abstract],
+                        [prop.render(fmt) for prop in self.class_methods if prop.is_abstract],
                     ),
-                    section(
-                        "Methods", [prop.dot_fmt for prop in self.methods if not prop.is_abstract]
+                    fmt.section(
+                        "Methods",
+                        [prop.render(fmt) for prop in self.methods if not prop.is_abstract],
                     ),
-                    section(
+                    fmt.section(
                         "Class Methods",
-                        [prop.dot_fmt for prop in self.class_methods if not prop.is_abstract],
+                        [prop.render(fmt) for prop in self.class_methods if not prop.is_abstract],
                     ),
                     "\t} >",
                 ],

@@ -1,11 +1,12 @@
-from abc import ABCMeta, abstractmethod
-from typing import Dict, List, Optional, NamedTuple
+from abc import ABC, abstractmethod
+from typing import Dict, List, Optional
 from collections import OrderedDict
 
-from pyviz.formatting import type_color
+from pyviz.config import UMLAttributes
+from pyviz.fmt import DotFormatter
 
 
-class IAttr:
+class UMLBase(ABC):
     """
     Attribute interface that stores a name, type, and description.
     """
@@ -17,22 +18,15 @@ class IAttr:
     def __init__(
         self, name: str, type: Optional[str] = None, description: Optional[str] = None, **kwargs
     ):
-        """
-        Initialize the class
-        """
         self.name = name
         self.type = type
         self.description = description
 
-        for name, value in kwargs.items():
-            if name in self.__dict__ and getattr(self, name):
-                raise Exception(
-                    f"Attempted to set a value for {name}, but it already exists on this object."
-                )
-            setattr(self, name, value)
+        for name, attr in kwargs.items():
+            setattr(self, name, attr)
 
 
-class IRenderable(IAttr):
+class IRenderable(UMLBase):
     """
     Represents a UML attribute that can be rendered as it's own node.
     """
@@ -48,17 +42,8 @@ class IRenderable(IAttr):
         self._impl = []
         super().__init__(*args, **kwargs)
 
-    @property
     @abstractmethod
-    def dot_attributes(self) -> Dict[str, str]:
-        """
-        Returns:
-            Dict[str, str]: A mapping of attributes to set while rendering this node.
-        """
-
-    @property
-    @abstractmethod
-    def dot_label(self) -> str:
+    def render_label(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: The dot syntax HTML label for this object.
@@ -80,6 +65,18 @@ class IRenderable(IAttr):
         """
         return self._impl
 
+    def get_attributes(self, uml_config: UMLAttributes) -> Optional[Dict[str, str]]:
+        """
+        Override this function to allow for specific attributes to be passed to the render function.
+
+        Args:
+            uml_config (UMLAttributes): A NamedTuple representing global uml attribute settings.
+
+        Returns:
+            Optional[Dict[str, str]]: An optional mapping of named attributes to use for rendering.
+        """
+        return None
+
     def depends_on(self, node: "IRenderable") -> None:
         """
         Register a dependency for this node.
@@ -99,43 +96,40 @@ class IRenderable(IAttr):
         self._impl.append(node)
 
 
-class IRenderComponent(IAttr):
+class IRenderComponent(UMLBase):
     """
     Represents a UML attribute that is not rendered on it's own, but as part of another node.
     """
 
-    @property
     @abstractmethod
-    def dot_fmt(self) -> str:
+    def render(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: Formatted dot string representing this component.
         """
 
 
-class ISimpleRenderComponent(IRenderComponent):
+class SimpleRenderComponent(IRenderComponent):
     """
     An extension of IRenderComponent that provides a default dot_fmt property.
     """
 
-    @property
-    def dot_fmt(self) -> str:
+    def render(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: Formatted dot string of this UML component.
         """
-        return f"{self.name}: {type_color(self.type)}"
+        return f"{self.name}: {fmt.color_type(self.type)}"
 
 
-class ISimpleRenderable(IRenderable):
+class SimpleRenderable(IRenderable):
     """
     An extension of IRenderable that provides a default dot_label property.
     """
 
-    @property
-    def dot_label(self) -> str:
+    def render_label(self, fmt: DotFormatter) -> str:
         """
         Returns:
             str: Simple label for this renderable.
         """
-        return f"<B>{self.name}</B>: {type_color(self.type)}"
+        return f"<B>{self.name}</B>: {fmt.color_type(self.type)}"

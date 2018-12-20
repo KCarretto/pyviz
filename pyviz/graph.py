@@ -1,19 +1,38 @@
 """
 This module contains graphviz helper functions.
 """
-from typing import Callable, Dict, List, Union
+from typing import Callable, Dict, List, NamedTuple, Optional, Union
 
 from pyviz.base import IRenderable
-from pyviz.formatting import format_attr, format_attributes
+from pyviz.config import GraphConfig
+from pyviz.fmt import DotFormatter
 
 
 class Graph:
+    _config: GraphConfig
+    _fmt: DotFormatter
     _nodes: Dict[str, IRenderable]
-    _attrs: Dict[str, str]
 
-    def __init__(self, **kwargs):
-        self._attrs = kwargs
+    def __init__(self, config: GraphConfig):
+        self._config = config
+        self._fmt = DotFormatter(self._config)
         self._nodes = {}
+
+    @property
+    def config(self) -> GraphConfig:
+        """
+        Returns:
+            GraphConfig: The config used by this instance.
+        """
+        return self._config
+
+    @property
+    def fmt(self) -> DotFormatter:
+        """
+        Returns:
+            DotFormatter: An instance of a dot formatter configured for this graph.
+        """
+        return self._fmt
 
     @property
     def nodes(self) -> Dict[str, IRenderable]:
@@ -49,15 +68,23 @@ class Graph:
         Returns:
             str: A dot formatted string representing the graph.
         """
-        graph_attrs = [format_attr(name, value) for name, value in self._attrs.items()]
+        graph_attrs = self.fmt.attribute_list(self.config.attributes.graph)
+        node_attrs = self.fmt.attributes(self.config.attributes.default_node)
+        edge_attrs = self.fmt.attributes(self.config.attributes.default_edge)
+        dep_attrs = self.fmt.attributes(self.config.attributes.dependency_edge)
+        impl_attrs = self.fmt.attributes(self.config.attributes.inheritance_edge)
 
-        nodes = ["\n\t// Objects"]
-        deps = ["\n\t// Dependencies", "edge [style=dashed]\n"]
-        impls = ["\n\t// Inheritance", "edge [style=dashed arrowhead=empty]\n"]
+        default_node_attr = f"node {node_attrs}" if node_attrs else None
+        default_edge_attr = f"edge {edge_attrs}" if edge_attrs else None
+        dep_edge_attr = f"edge {dep_attrs}" if dep_attrs else None
+        impl_edge_attr = f"edge {impl_attrs}" if impl_attrs else None
+
+        nodes = [default_node_attr, default_edge_attr, "\n\t// Objects"]
+        deps = ["\n\t// Dependencies", dep_edge_attr]
+        impls = ["\n\t// Inheritance", impl_edge_attr]
 
         for name, node in self._nodes.items():
-            attributes = format_attributes(label=node.dot_label, **node.dot_attributes)
-            nodes.append(f"{name} {attributes}\n")
+            nodes.append(self._render_node(node))
 
             deps.append("\n".join(f"{name} -> {dep.name};" for dep in node.deps))
             impls.append("\n".join(f"{name} -> {impl.name};" for impl in node.impl))
@@ -68,17 +95,18 @@ class Graph:
 
         return f"{graph}\n}}"
 
+    def _render_node(self, node: IRenderable) -> str:
+        """
+        Render the data from a given node using attributes found in our config. Allows for specific
+        overrides if the node implements the get_attributes method.
 
-# def create_graph(label: str, nodes: List[IRenderable]) -> str:
-#     """
-#     Args:
-#         label (str): The title for the graph.
-#         nodes (List[IRenderable]): A list of nodes to render.
-#     Returns:
-#         str: The dot format string for this graph.
-#     """
-#     graph = pgv.AGraph(strict=False, directed=True)
-#     for node in nodes:
-#         graph.add_node(node.name.lower(), label=node.dot_label, **node.render_attributes)
-
-#     return graph.string()
+        Args:
+            node (IRenderable): The node to be rendered.
+        Returns:
+            str: The dot formatted string for the node.
+        """
+        attr_override = node.get_attributes(self.config.uml_attributes)
+        if not attr_override:
+            attr_override = {}
+        attributes = self.fmt.attributes(label=node.render_label(self.fmt), **attr_override)
+        return f"{node.name} {attributes}"
