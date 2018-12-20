@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Dict, List, NamedTuple, Optional
+from typing import Dict, List, NamedTuple, Optional, TypeVar
 from enum import Enum
 
 from pyviz.base import IRenderable, SimpleRenderable, IRenderComponent, SimpleRenderComponent
@@ -155,6 +155,37 @@ class Class(IRenderable):
     properties: List[Property]
     methods: List[Method]
 
+    def __init__(self, *args, **kwargs):
+
+        self.properties = []
+        self.methods = []
+
+        super().__init__(*args, **kwargs)
+
+    @property
+    def type_fmt(self) -> str:
+        """
+        Returns:
+            str: This classes Type[].
+        """
+        return f"Type[{self.name}]"
+
+    def type_prop(self, name: Optional[str] = None) -> Property:
+        """
+        Return this classes Type as a property.
+        """
+        if not name:
+            name = to_underscore(self.name)
+        return Property(name, type=self.type_fmt)
+
+    def type_param(self, name: Optional[str] = None) -> Param:
+        """
+        Return this classes Type as a param.
+        """
+        if not name:
+            name = to_underscore(self.name)
+        return Param(name, type=self.type_fmt)
+
     def prop(self, name: Optional[str] = None) -> Property:
         """
         Return this class as a property.
@@ -170,13 +201,6 @@ class Class(IRenderable):
         if not name:
             name = to_underscore(self.name)
         return Param(name, type=self.type)
-
-    def __init__(self, *args, **kwargs):
-
-        self.properties = []
-        self.methods = []
-
-        super().__init__(*args, **kwargs)
 
     def get_attributes(self, uml_config: UMLAttributes) -> Optional[Dict[str, str]]:
         """
