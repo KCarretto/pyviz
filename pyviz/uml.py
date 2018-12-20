@@ -175,7 +175,7 @@ class Class(IRenderable):
         Return this classes Type as a property.
         """
         if not name:
-            name = to_underscore(self.name)
+            name = f"{to_underscore(self.name)}_cls"
         return Property(name, type=self.type_fmt)
 
     def type_param(self, name: Optional[str] = None) -> Param:
@@ -183,7 +183,7 @@ class Class(IRenderable):
         Return this classes Type as a param.
         """
         if not name:
-            name = to_underscore(self.name)
+            name = f"{to_underscore(self.name)}_cls"
         return Param(name, type=self.type_fmt)
 
     def prop(self, name: Optional[str] = None) -> Property:
