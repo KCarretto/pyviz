@@ -2,7 +2,13 @@ from abc import ABCMeta, abstractmethod
 from typing import Dict, List, NamedTuple, Optional, TypeVar
 from enum import Enum
 
-from pyviz.base import IRenderable, SimpleRenderable, IRenderComponent, SimpleRenderComponent
+from pyviz.base import (
+    UMLBase,
+    IRenderable,
+    SimpleRenderable,
+    IRenderComponent,
+    SimpleRenderComponent,
+)
 from pyviz.config import GraphConfig, UMLAttributes
 from pyviz.fmt import DotFormatter, to_underscore
 
@@ -19,6 +25,25 @@ class Property(SimpleRenderComponent):
     """
 
     is_classproperty: bool = False
+
+
+def Wrap(wrapper: str, *args) -> str:
+    """
+    Wrap arguments in a container (i.e. List[myclass], Dict[str, myclass])
+
+    Args:
+        wrapper (str): The wrapping container (i.e. List)
+        *args (Union[str, UMLBase]): The remaining arguments to wrap.
+    Returns:
+        str: Wrapped string formatted by the given types.
+    """
+    types = []
+    for arg in args:
+        if isinstance(arg, UMLBase):
+            types.append(arg.type)
+        else:
+            types.append(arg)
+    return f"{wrapper}[{', '.join(types)}]"
 
 
 def ClassProperty(prop: Property) -> Property:
