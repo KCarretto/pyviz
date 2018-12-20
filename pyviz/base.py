@@ -126,6 +126,8 @@ class SimpleRenderComponent(IRenderComponent):
         Returns:
             str: Formatted dot string of this UML component.
         """
+        if self.name.startswith("*"):
+            return self.name
         return f"{self.name}: {fmt.color_type(self.type)}"
 
 
