@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 from collections import OrderedDict
 
 from pyviz.config import UMLAttributes
@@ -16,10 +16,17 @@ class UMLBase(ABC):
     description: Optional[str] = None
 
     def __init__(
-        self, name: str, type: Optional[str] = None, description: Optional[str] = None, **kwargs
+        self,
+        name: str,
+        type: Optional[Union[str, "UMLBase"]] = None,
+        description: Optional[str] = None,
+        **kwargs,
     ):
         self.name = name
-        self.type = type
+        if isinstance(type, UMLBase):
+            self.type = type.type
+        else:
+            self.type = type
         self.description = description
 
         for name, attr in kwargs.items():
