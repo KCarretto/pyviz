@@ -188,12 +188,12 @@ class Class(IRenderable):
         super().__init__(*args, **kwargs)
 
     @property
-    def type_fmt(self) -> str:
+    def type(self) -> str:
         """
         Returns:
-            str: This classes Type[].
+            str: The type string for this node.
         """
-        return f"Type[{self.name}]"
+        return self.name
 
     def type_prop(self, name: Optional[str] = None) -> Property:
         """
@@ -201,7 +201,7 @@ class Class(IRenderable):
         """
         if not name:
             name = f"{to_underscore(self.name)}_cls"
-        return Property(name, type=self.type_fmt)
+        return Property(name, type=Wrap("Type", self.type))
 
     def type_param(self, name: Optional[str] = None) -> Param:
         """
@@ -209,7 +209,7 @@ class Class(IRenderable):
         """
         if not name:
             name = f"{to_underscore(self.name)}_cls"
-        return Param(name, type=self.type_fmt)
+        return Param(name, type=Wrap("Type", self.type))
 
     def prop(self, name: Optional[str] = None) -> Property:
         """
