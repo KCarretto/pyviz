@@ -75,7 +75,7 @@ class UMLModuleFunction(IRenderable):
         return label
 
 
-class UMLFunction(IRenderComponent):
+class UMLMethod(IRenderComponent):
     """
     A function that is to be rendered as a component.
     """
@@ -83,6 +83,7 @@ class UMLFunction(IRenderComponent):
     params: List[UMLVar] = []
     is_awaitable: bool = False
     is_abstract: bool = False
+    is_classmethod: bool = False
 
     def __init__(self, *args, **kwargs):
         """
@@ -91,6 +92,7 @@ class UMLFunction(IRenderComponent):
         self.params = []
         self.is_awaitable = False
         self.is_abstract = False
+        self.is_classmethod = False
         super().__init__(*args, **kwargs)
 
     def render(self, fmt: DotFormatter) -> str:
@@ -110,18 +112,6 @@ class UMLFunction(IRenderComponent):
         return label
 
 
-class UMLClassMethod(UMLFunction):
-    """
-    Represents a function bound to an object type.
-    """
-
-
-class UMLMethod(UMLFunction):
-    """
-    Represents a function bound to an instance of an object.
-    """
-
-
 class UMLClass(IRenderable):
     """
     Represents a class.
@@ -129,15 +119,9 @@ class UMLClass(IRenderable):
 
     properties: List[UMLProperty]
     methods: List[UMLMethod]
-    class_methods: List[UMLClassMethod]
 
     def __init__(
-        self,
-        *args,
-        properties: List[UMLProperty] = None,
-        methods: List[UMLMethod] = None,
-        class_methods: List[UMLClassMethod] = None,
-        **kwargs,
+        self, *args, properties: List[UMLProperty] = None, methods: List[UMLMethod] = None, **kwargs
     ):
         super().__init__(*args, **kwargs)
 
@@ -149,7 +133,6 @@ class UMLClass(IRenderable):
             class_methods = []
         self.properties = properties
         self.methods = methods
-        self.class_methods = class_methods
 
     @property
     def dot_attributes(self) -> Dict[str, str]:
@@ -170,6 +153,23 @@ class UMLClass(IRenderable):
         Returns:
             str: A dot format HTML label for this node.
         """
+        abstract_classmethods = []
+        abstract_methods = []
+        classmethods = []
+        methods = []
+
+        for m in self.methods:
+            if m.is_abstract:
+                if m.is_classmethod:
+                    abstract_classmethods.append(m)
+                else:
+                    abstract_methods.append(m)
+            else:
+                if m.is_classmethod:
+                    classmethods.append(m)
+                else:
+                    methods.append(m)
+
         label = "\n".join(
             filter(
                 lambda x: x is not None,
@@ -177,21 +177,14 @@ class UMLClass(IRenderable):
                     f"< {{<B>{self.name}</B>",
                     fmt.section("Properties", [prop.render(fmt) for prop in self.properties]),
                     fmt.section(
-                        "Abstract Methods",
-                        [prop.render(fmt) for prop in self.methods if prop.is_abstract],
-                    ),
-                    fmt.section(
                         "Abstract Class Methods",
-                        [prop.render(fmt) for prop in self.class_methods if prop.is_abstract],
+                        [prop.render(fmt) for prop in abstract_classmethods],
                     ),
                     fmt.section(
-                        "Methods",
-                        [prop.render(fmt) for prop in self.methods if not prop.is_abstract],
+                        "Abstract Methods", [prop.render(fmt) for prop in abstract_methods]
                     ),
-                    fmt.section(
-                        "Class Methods",
-                        [prop.render(fmt) for prop in self.class_methods if not prop.is_abstract],
-                    ),
+                    fmt.section("Class Methods", [prop.render(fmt) for prop in classmethods]),
+                    fmt.section("Methods", [prop.render(fmt) for prop in methods]),
                     "\t} >",
                 ],
             )
