@@ -1,19 +1,17 @@
 """
 This module contains a sample UML layout used by the test cases.
 """
-from pyviz import uml
+from pyviz.uml import Class, Method, Property, Param, Abstract
 
-Country = uml.UMLClass(
-    "Country", properties=[uml.UMLProperty("name", "str"), uml.UMLProperty("population", "int")]
-)
-IPerson = uml.UMLClass(
+Country = Class("Country", properties=[Property("name", "str"), Property("population", "int")])
+IPerson = Class(
     "IPerson",
-    properties=[uml.UMLProperty("name", "str"), uml.UMLProperty("age", "int")],
-    methods=[uml.UMLMethod("celebrate", params=[uml.UMLVar("amount", "int")], is_abstract=True)],
+    properties=[Property("name", "str"), Property("age", "int")],
+    methods=[Abstract(Method("celebrate", params=[Param("amount", "int")]))],
 )
-Citizen = uml.UMLClass(
+Citizen = Class(
     "Citizen",
-    properties=[uml.UMLProperty("happiness", "int")],
-    methods=[uml.UMLMethod("celebrate", params=[uml.UMLVar("amount", "int")])],
+    properties=[Property("happiness", "int")],
+    methods=[Method("celebrate", params=[Param("amount", "int")])],
 )
 

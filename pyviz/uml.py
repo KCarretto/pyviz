@@ -7,42 +7,46 @@ from pyviz.config import GraphConfig, UMLAttributes
 from pyviz.fmt import DotFormatter
 
 
-class UMLVar(SimpleRenderComponent):
+class Param(SimpleRenderComponent):
     """
-    Represents a variable that is either a parameter to a function, or a return value from one.
-    """
-
-
-class UMLProperty(SimpleRenderComponent):
-    """
-    Represents an instance read-only attribute of an object type.
+    Represents a parameter to a function.
     """
 
 
-class UMLClassProperty(SimpleRenderComponent):
+class Property(SimpleRenderComponent):
     """
     Represents an instance read-only attribute of an object type.
     """
 
+    is_classproperty: bool = False
 
-class UMLGlobal(SimpleRenderable):
+
+def ClassProperty(prop: Property) -> Property:
+    """
+    Returns the property as a class property,
+    """
+    prop.is_classproperty = True
+    return prop
+
+
+class Global(SimpleRenderable):
     """
     Represents a global value.
     """
 
 
-class UMLConstant(SimpleRenderable):
+class Constant(SimpleRenderable):
     """
     Represents a global constant that does not change.
     """
 
 
-class UMLModuleFunction(IRenderable):
+class ModuleFunction(IRenderable):
     """
     Represents a module level function.
     """
 
-    params: List[UMLVar] = []
+    params: List[Param] = []
     is_awaitable: bool = False
 
     def __init__(self, *args, **kwargs):
@@ -52,6 +56,13 @@ class UMLModuleFunction(IRenderable):
         self.params = []
         self.is_awaitable = False
         super().__init__(*args, **kwargs)
+
+    def get_attributes(self, uml_config: UMLAttributes) -> Optional[Dict[str, str]]:
+        """
+        Returns:
+            Dict[str, str]: mapping of ModuleFunction attributes.
+        """
+        return uml_config.uml_module_function
 
     @property
     def dot_attributes(self) -> Dict[str, str]:
@@ -75,12 +86,12 @@ class UMLModuleFunction(IRenderable):
         return label
 
 
-class UMLMethod(IRenderComponent):
+class Method(IRenderComponent):
     """
     A function that is to be rendered as a component.
     """
 
-    params: List[UMLVar] = []
+    params: List[Param] = []
     is_awaitable: bool = False
     is_abstract: bool = False
     is_classmethod: bool = False
@@ -112,13 +123,37 @@ class UMLMethod(IRenderComponent):
         return label
 
 
-class UMLClass(IRenderable):
+def Cls(method: Method) -> Method:
+    """
+    Return the method as a classmethod.
+    """
+    method.is_classmethod = True
+    return method
+
+
+def Async(method: Method) -> Method:
+    """
+    Return a method as an async method.
+    """
+    method.is_awaitable = True
+    return method
+
+
+def Abstract(method: Method) -> Method:
+    """
+    Return a method as an abstract method.
+    """
+    method.is_abstract = True
+    return method
+
+
+class Class(IRenderable):
     """
     Represents a class.
     """
 
-    properties: List[UMLProperty]
-    methods: List[UMLMethod]
+    properties: List[Property]
+    methods: List[Method]
 
     def __init__(self, *args, **kwargs):
 
@@ -127,17 +162,10 @@ class UMLClass(IRenderable):
 
         super().__init__(*args, **kwargs)
 
-    @property
-    def dot_attributes(self) -> Dict[str, str]:
-        """
-        Returns:
-            Dict[str, str]: mapping of UMLClass attributes.
-        """
-        return {"shape": "record"}
-
     def get_attributes(self, uml_config: UMLAttributes) -> Optional[Dict[str, str]]:
         """
-        Override to return UMLClass specific attributes.
+        Returns:
+            Dict[str, str]: mapping of Class attributes.
         """
         return uml_config.uml_class
 
