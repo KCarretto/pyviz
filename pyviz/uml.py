@@ -181,19 +181,13 @@ class Class(IRenderable):
     methods: List[Method]
 
     def __init__(self, *args, **kwargs):
-
         self.properties = []
         self.methods = []
 
         super().__init__(*args, **kwargs)
 
-    @property
-    def type(self) -> str:
-        """
-        Returns:
-            str: The type string for this node.
-        """
-        return self.name
+        if not self.type:
+            self.type = self.name
 
     def type_prop(self, name: Optional[str] = None) -> Property:
         """
