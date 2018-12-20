@@ -155,19 +155,21 @@ class Class(IRenderable):
     properties: List[Property]
     methods: List[Method]
 
-    @property
-    def prop(self) -> Property:
+    def prop(self, name: Optional[str] = None) -> Property:
         """
         Return this class as a property.
         """
-        return Property(to_underscore(self.name), type=self.type)
+        if not name:
+            name = to_underscore(self.name)
+        return Property(name, type=self.type)
 
-    @property
-    def param(self) -> Param:
+    def param(self, name: Optional[str] = None) -> Param:
         """
         Return this class as a param.
         """
-        return Param(to_underscore(self.name), type=self.type)
+        if not name:
+            name = to_underscore(self.name)
+        return Param(name, type=self.type)
 
     def __init__(self, *args, **kwargs):
 
