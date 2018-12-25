@@ -1,7 +1,7 @@
 """
 This module contains a sample UML layout used by the test cases.
 """
-from pyviz.uml import Class, Method, Property, Param, Abstract
+from pyviz.structure import Class, Method, Property, Param, Abstract
 
 Country = Class("Country", properties=[Property("name", "str"), Property("population", "int")])
 IPerson = Class(

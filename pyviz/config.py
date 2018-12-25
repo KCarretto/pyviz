@@ -25,6 +25,15 @@ class GraphAttributes(NamedTuple):
     inheritance_edge: Dict[str, str] = dict(style="dashed", arrowhead="empty")
 
 
+class CodeFlow(NamedTuple):
+    """
+    Settings for CodeFlow rendering.
+    """
+
+    bind_edge: Dict[str, str] = dict(style="dotted")  # Edge that binds methods to classes
+    flow_edge: Dict[str, str] = dict(style="dashed", color="red")
+
+
 class UMLAttributes(NamedTuple):
     """
     This object stores um attributes that are specific to a UML type.
@@ -40,6 +49,7 @@ class GraphConfig(NamedTuple):
     colors: GraphColors
     attributes: GraphAttributes
     uml_attributes: UMLAttributes
+    code_flow: Optional[CodeFlow] = None
 
     @classmethod
     def default(cls) -> "GraphConfig":

@@ -5,17 +5,8 @@ from typing import Dict, List, Optional
 import re
 
 from pyviz.config import GraphConfig
-
-_first_cap_re = re.compile("(.)([A-Z][a-z]+)")
-_all_cap_re = re.compile("([a-z0-9])([A-Z])")
-
-
-def to_underscore(name: str) -> str:
-    """
-    Converts a camelCase string to underscore_format.
-    """
-    s1 = _first_cap_re.sub(r"\1_\2", name)
-    return _all_cap_re.sub(r"\1_\2", s1).lower()
+from pyviz.structure.base import BaseNode
+from pyviz.structure.objects import Class, ModuleFunction, Method
 
 
 class DotFormatter:
@@ -161,3 +152,102 @@ class DotFormatter:
             return self.color("None", colors.get("None"))
         c = colors.get(type, colors["default"])
         return self.color(type, c)
+
+    def _render_node(self, node: BaseNode, **kwargs) -> str:
+        """
+        Args:
+            node (BaseNode): The node to render.
+            **kwargs: Attribute overrides for the node.
+        Returns:
+           str: The rendered node.
+        """
+        rendered = []
+        if isinstance(node, Class):
+            rendered.append(self._render_class_label(node))
+
+            if self.config.code_flow:
+                for m in node.class_methods + node.methods:
+                    label = f"{self._render_node_label(m)}"
+                    attributes = self.attributes(dict(label=label))
+                    rendered.append(f"{node.name}_{m.name} {attributes}")
+        else:
+            label = self._render_node_label(node)
+            kwargs["label"] = label
+            attributes = self.attributes(kwargs)
+            rendered.append(f"{node.name} {attributes}")
+        return "\n".join(rendered)
+
+    def _render_node_label(self, node: BaseNode) -> str:
+        """
+        Args:
+            node (BaseNode): The node to render.
+
+        Returns:
+            str: The HTML or string representation of the nodes display label.
+        """
+        if isinstance(node, ModuleFunction):
+            return self._render_function_label(node)
+        else:
+            return self._render_default_label(node)
+
+    def _render_default_label(self, node: BaseNode) -> str:
+        """
+        Returns:
+            str: name: Type
+        """
+        if node.name.startswith("*"):
+            return node.name
+        return f"< {node.name}: {self.color_type(node.type)} >"
+
+    def _render_function_label(self, node: ModuleFunction) -> str:
+        """
+        Renders a module level function.
+        """
+        params = ", ".join([self._render_node_label(param) for param in node.params])
+        if node.is_awaitable:
+            return f"{self.awaitable(node.name)}({params}): {self.color_type(node.type)}"
+        return f"< {node.name}({params}): {self.color_type(node.type)} >"
+
+    def _render_method_label(self, node: Method) -> str:
+        """
+        Returns:
+            str: A dot formatted function signature label.
+        """
+        params = ", ".join([self._render_node_label(param) for param in node.params])
+        label = f"{node.name}({params})"
+
+        if node.is_abstract:
+            label = node.abstract(label)
+        label = f"{label}: {self.color_type(node.type)}"
+        if node.is_awaitable:
+            label = self.awaitable(label)
+
+        return f"< {label} >"
+
+    def _render_class_label(self, node: Class) -> str:
+        """
+        Special render function for classes to support CodeFlow.
+        """
+        sections = [
+            f"< {{<B>{node.name}</B>",
+            self.section("Properties", [self._render_node_label(prop) for prop in node.properties]),
+            self.section(
+                "Abstract Class Methods",
+                [self._render_node_label(prop) for prop in node.abstract_class_methods],
+            ),
+            self.section(
+                "Abstract Methods",
+                [self._render_node_label(prop) for prop in node.abstract_methods],
+            ),
+            self.section(
+                "Class Methods", [self._render_node_label(prop) for prop in node.class_methods]
+            )
+            if not self.config.code_flow
+            else None,
+            self.section("Methods", [self._render_node_label(prop) for prop in node.methods])
+            if not self.config.code_flow
+            else None,
+            "\t} >",
+        ]
+        return "\n".join(filter(lambda x: x is not None, sections))
+
