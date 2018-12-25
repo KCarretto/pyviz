@@ -52,7 +52,7 @@ class GraphConfig(NamedTuple):
     code_flow: Optional[CodeFlow] = None
 
     @classmethod
-    def default(cls) -> "GraphConfig":
+    def default(cls, code_flow: Optional[CodeFlow] = None) -> "GraphConfig":
         """
         Returns:
             GraphConfig: A graph config initialized with default settings.
@@ -61,4 +61,6 @@ class GraphConfig(NamedTuple):
         attributes = GraphAttributes()
         uml_attributes = UMLAttributes()
 
-        return cls(colors=colors, attributes=attributes, uml_attributes=uml_attributes)
+        return cls(
+            colors=colors, attributes=attributes, uml_attributes=uml_attributes, code_flow=CodeFlow
+        )
