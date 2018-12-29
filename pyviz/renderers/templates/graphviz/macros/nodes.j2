@@ -1,0 +1,95 @@
+{% from "macros/color.j2" import color_type %}
+{# BUILD VAR #}
+{%- macro build_var(var) -%}
+{{var["name"]}}: {{ color_type(var["type"]) }}
+{%- endmacro -%}
+
+{# BUILD METHOD #}
+{%- macro build_method(method) -%}
+    {%- set name = method["name"] -%}
+    {%- set params = method.get("params", []) -%}
+    {%- set rtype = method.get("type", "None") -%}
+    {%- set is_async = method.get("is_async", false) -%}
+    {%- set is_cls = method.get("is_cls", false) -%}
+    {%- set is_abstract = method.get("is_abstract", false) -%}
+
+    {%- if is_async == true -%}
+    <FONT COLOR="darkorchid1">async </FONT>
+    {%- endif -%}
+
+    {%- if is_abstract == true -%}
+    <I>{{-name-}} </I>
+    {%- else -%}
+    {{-name-}}
+    {%- endif -%}
+    (
+    {%- for param in params -%}
+        {{- param["name"] }}: {{ color_type(param["type"]) }}
+        {%- if not loop.last %}
+        {{- ', '}}
+        {%- endif -%}
+    {%- endfor -%})
+    {{- ': '}} {{- color_type(rtype)}}
+{%- endmacro -%}
+
+{# BUILD CLASS #}
+{%- macro build_class(class) -%}
+{%- set name = class["name"] -%}
+{%- set description = class.get("description") -%}
+{%- set properties = class.get("properties", []) -%}
+{%- set methods = class.get("methods", []) -%}
+{{name}} [
+    shape=none
+    portPos="t"
+    label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+            <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>{{name}}</B></FONT></TD></TR>
+            {%- if description is not none -%}
+            <TR>
+                <TD><I>Description</I></TD>
+                <TD align="left">{{description}}</TD>
+            </TR>
+            {%- endif -%}
+            {%- if properties -%}
+            <TR>
+                <TD><I>Properties</I></TD>
+                <TD align="left">
+                {%- for property in properties -%}
+                {{- build_var(property) }}<BR ALIGN="LEFT"/>
+                {%- endfor -%}
+                </TD>
+            </TR>
+            {%- endif -%}
+            {%- if methods -%}
+
+            {# BUILD METHODS #}
+            {%- set built_methods = namespace(abstract="", concrete="") -%}
+            {%- for method in methods -%}
+                {%- set built_method = build_method(method) -%}
+                {%- if method.is_abstract -%}
+                {%- set built_methods.abstract = built_methods.abstract + built_method + '<BR ALIGN="LEFT"/>' -%}
+                {%- else -%}
+                {%- set built_methods.concrete = built_methods.concrete + built_method + '<BR ALIGN="LEFT"/>' -%}
+                {%- endif -%}
+            {%- endfor -%}
+
+            {%- if built_methods.abstract -%}
+            <TR>
+                <TD><I>Abstract Methods</I></TD>
+                <TD align="left">
+                {{-built_methods.abstract-}}
+                </TD>
+            </TR>
+            {%- endif -%}
+            {%- if built_methods.concrete -%}
+            <TR>
+                <TD><I>Methods</I></TD>
+                <TD align="left">
+                {{-built_methods.concrete}}
+                </TD>
+            </TR>
+            {%- endif -%}
+            {%- endif -%}
+        </TABLE>
+    >
+]; /* End {{class.name}} */
+{%- endmacro -%}

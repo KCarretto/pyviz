@@ -1,7 +1,0 @@
-{% for name, value in graph.items() %}
-    {% if value.startswith("<") %}
-    {{name}}={{value}}
-    {% else %}
-    {{name}}="{{value}}"
-    {% endif %}
-{% endfor %}

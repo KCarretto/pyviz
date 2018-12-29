@@ -77,7 +77,7 @@ class Class:
     methods: List[Method] = field(default_factory=list)
     description: Optional[str] = None
     parents: List[TClass] = field(init=False, default_factory=list)
-    children: List[TClass] = field(init=False, default_factory=list)
+    deps: List[TClass] = field(init=False, default_factory=list)
 
     def inherits(self, parent: TClass) -> None:
         """
@@ -85,3 +85,10 @@ class Class:
             parent (TClass): Mark this class as inheriting from the parent class.
         """
         self.parents += [parent]
+
+    def depends_on(self, dependency: TClass) -> None:
+        """
+        Args:
+            dependency (TClass): Mark this class as dependent on the provided dependency.
+        """
+        self.deps += [dependency]

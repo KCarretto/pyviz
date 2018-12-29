@@ -1,0 +1,44 @@
+{% extends "graph.j2" %}
+{% from "macros/attributes.j2" import build_attrs %}
+{% from "macros/nodes.j2" import build_class %}
+{% from "macros/edges.j2" import build_parents, build_dependencies %}
+
+{# BUILD #}
+{% set built = namespace(classes="", parents="", dependencies="") %}
+{% for node in classes %}
+    {% set class_node = build_class(node) %}
+    {% set parent_edges = build_parents(node) %}
+    {% set dep_edges = build_dependencies(node) %}
+
+    {# BUILD CLASS #}
+    {% if class_node %}
+        {% set built.classes = built.classes + class_node + "\n\n" %}
+    {% endif %}
+
+    {# BUILD PARENTS #}
+    {% if parent_edges %}
+        {% set built.parents = built.parents + parent_edges + "\n" %}
+    {% endif %}
+
+    {# BUILD DEPENDENCIES #}
+    {% if dep_edges %}
+        {% set built.dependencies = built.dependencies + dep_edges + "\n\n" %}
+    {% endif %}
+{% endfor %}
+
+{% block graph_attrs %}
+{{ build_attrs(graph) -}}
+{% endblock %}
+
+{% block nodes %}
+/* Classes */
+{{ built.classes -}}
+{% endblock %}
+
+{% block edges %}
+/* Inheritance */
+{{ built.parents -}}
+
+/* Dependencies */
+{{ built.dependencies -}}
+{% endblock %}

@@ -1,0 +1,12 @@
+{# COLOR TYPES #}
+{%- macro color_type(var) -%}
+    {%- if var == 'None' -%}
+        <FONT COLOR="red">{{var}}</FONT>
+    {%- else -%}
+    <FONT COLOR="dodgerblue">{{var}}</FONT>
+    {%- endif -%}
+{%- endmacro -%}
+
+{%- macro color_async(var) -%}
+<FONT COLOR="dodgerblue">{{var}}</FONT>
+{%- endmacro -%}

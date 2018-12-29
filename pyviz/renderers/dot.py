@@ -23,7 +23,7 @@ class ClassDotRenderer(GraphvizRenderer):
     Render a Graphviz graph from Classes.
     """
 
-    template_name: str = "graph.j2"
+    template_name: str = "class_graph.j2"
     template_dir: str = "graphviz"
 
     graph_attributes: Dict[str, str]
