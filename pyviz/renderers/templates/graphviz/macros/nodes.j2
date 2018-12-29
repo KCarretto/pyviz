@@ -35,6 +35,7 @@
 {# BUILD CLASS #}
 {%- macro build_class(class) -%}
 {%- set name = class["name"] -%}
+{%- set ext_parent = class["ext_parent"] -%}
 {%- set description = class.get("description") -%}
 {%- set properties = class.get("properties", []) -%}
 {%- set methods = class.get("methods", []) -%}
@@ -42,7 +43,11 @@
     shape=none
     portPos="t"
     label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+            {%- if ext_parent is not none -%}
+            <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>{{name}} </B>({{ext_parent}})</FONT></TD></TR>
+            {%- else -%}
             <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>{{name}}</B></FONT></TD></TR>
+            {%- endif -%}
             {%- if description is not none -%}
             <TR>
                 <TD><I>Description</I></TD>

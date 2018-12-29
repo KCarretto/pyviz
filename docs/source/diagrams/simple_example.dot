@@ -17,8 +17,7 @@ digraph graph_test {
     I [
         shape=none
         portPos="t"
-        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
-                <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>I</B></FONT></TD></TR><TR>
+        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10"><TR><TD colspan='2'><FONT POINT-SIZE="18"><B>I </B>(typing_extensions.Protocol)</FONT></TD></TR><TR>
                     <TD><I>Description</I></TD>
                     <TD align="left">Interface I</TD>
                 </TR><TR>
@@ -34,8 +33,7 @@ digraph graph_test {
     A [
         shape=none
         portPos="t"
-        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
-                <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>A</B></FONT></TD></TR><TR>
+        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10"><TR><TD colspan='2'><FONT POINT-SIZE="18"><B>A</B></FONT></TD></TR><TR>
                     <TD><I>Description</I></TD>
                     <TD align="left">Class A</TD>
                 </TR><TR>
@@ -55,8 +53,7 @@ digraph graph_test {
     B [
         shape=none
         portPos="t"
-        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
-                <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>B</B></FONT></TD></TR><TR>
+        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10"><TR><TD colspan='2'><FONT POINT-SIZE="18"><B>B</B></FONT></TD></TR><TR>
                     <TD><I>Description</I></TD>
                     <TD align="left">Class B</TD>
                 </TR><TR>
@@ -76,8 +73,7 @@ digraph graph_test {
     C [
         shape=none
         portPos="t"
-        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
-                <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>C</B></FONT></TD></TR><TR>
+        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10"><TR><TD colspan='2'><FONT POINT-SIZE="18"><B>C</B></FONT></TD></TR><TR>
                     <TD><I>Description</I></TD>
                     <TD align="left">Class C</TD>
                 </TR><TR>

@@ -84,28 +84,37 @@ class Method:
         self.type: str = _coerce_type(self.type)
 
 
-TClass = TypeVar("TClass", bound="T")
-
-
 @dataclass
 class Class(metaclass=NodeMeta):
+    """
+    Attributes:
+        name (str): The name of the class.
+        properties (List[Var]): A list of public properties on the class.
+        methods (List[Method]): A list of public methods on the class.
+        description (Optional[str]): An optional description of the class.
+        ext_parent (Optional[str]): Specify a parent class from an external module. Absolute import.
+        parents (List[Class]): Specify a list of parent classes.
+        deps (List[Class]): A list of classes this class depends on.
+    """
+
     name: str
     properties: List[Var] = field(default_factory=list)
     methods: List[Method] = field(default_factory=list)
     description: Optional[str] = None
-    parents: List[TClass] = field(init=False, default_factory=list)
-    deps: List[TClass] = field(init=False, default_factory=list)
+    ext_parent: Optional[str] = None
+    parents: List["Class"] = field(init=False, default_factory=list)
+    deps: List["Class"] = field(init=False, default_factory=list)
 
-    def inherits(self, parent: TClass) -> None:
+    def inherits(self, parent: "Class") -> None:
         """
         Args:
-            parent (TClass): Mark this class as inheriting from the parent class.
+            parent (Class): Mark this class as inheriting from the parent class.
         """
         self.parents += [parent]
 
-    def depends_on(self, dependency: TClass) -> None:
+    def depends_on(self, dependency: "Class") -> None:
         """
         Args:
-            dependency (TClass): Mark this class as dependent on the provided dependency.
+            dependency (Class): Mark this class as dependent on the provided dependency.
         """
         self.deps += [dependency]

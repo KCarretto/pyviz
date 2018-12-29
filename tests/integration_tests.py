@@ -49,7 +49,11 @@ def sample_classes() -> Tuple[Class]:
     abc_three = Abstract(do_three)
 
     I = A = Class(
-        "I", description="Interface I", properties=[p1], methods=[abc_one, abc_two, abc_three]
+        "I",
+        description="Interface I",
+        ext_parent="typing_extensions.Protocol",
+        properties=[p1],
+        methods=[abc_one, abc_two, abc_three],
     )
 
     A = Class("A", description="Class A", properties=[p1, v3], methods=[abc_one, abc_two, do_three])
