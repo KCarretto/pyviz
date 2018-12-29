@@ -40,9 +40,5 @@ class ClassDotRenderer(GraphvizRenderer):
         Returns:
             Dict[str, Any]: A map of template attributes needed to render a graphviz graph.
         """
-        a = {"graph": self.graph_attributes, "classes": [asdict(obj) for obj in self.classes]}
-        from pprint import pprint
-
-        # pprint(a)
-        return a
+        return {"graph": self.graph_attributes, "classes": [asdict(obj) for obj in self.classes]}
 
