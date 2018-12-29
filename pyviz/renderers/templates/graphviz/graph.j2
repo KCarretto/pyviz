@@ -1,0 +1,28 @@
+digraph {{ graph.get('name', 'g') }} {
+
+    /*
+     * GRAPH ATTRIBUTES
+     */
+
+    {% filter indent(width=4, first=true) %}
+    {% block graph_attrs %}{% endblock %}
+    {% endfilter %}
+
+
+    /*
+     * NODE DEFINITIONS
+     */
+
+    {% filter indent(width=4, first=true) %}
+    {% block nodes %}{% endblock %}
+    {% endfilter %}
+
+
+    /*
+     * EDGE DEFINITIONS
+     */
+
+    {% filter indent(width=4, first=true) %}
+    {% block edges %}{% endblock %}
+    {% endfilter %}
+}

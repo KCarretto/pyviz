@@ -1,0 +1,10 @@
+{# ATTRIBUTES #}
+{%- macro build_attrs(attrs) -%}
+    {%- for name, value in attrs.items() -%}
+        {%- if value.startswith("<") -%}
+        {{name}}={{value}}
+        {% else -%}
+        {{name}}="{{value}}"
+        {% endif -%}
+    {%- endfor -%}
+{%- endmacro -%}
