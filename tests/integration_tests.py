@@ -1,6 +1,7 @@
 from typing import Tuple
 
-from pyviz import ClassDotRenderer, Var, Method, Class, Abstract, Async, Cls, Wrap, Wrapper
+from pyviz import ClassDotRenderer, Var, Method, Class, Abstract, Async, Cls
+from pyviz.types import LIST, DICT
 
 
 def test_create_graph():
@@ -33,8 +34,8 @@ def sample_classes() -> Tuple[Class]:
 
     v1 = Var("v1", "str")
     v2 = Var("v2", "int")
-    v3 = Var("v3", Wrap(Wrapper.LIST, "str"))
-    p1 = Var("v1_dct", Wrap(Wrapper.DICT, "str", v1))
+    v3 = Var("v3", LIST("str"))
+    p1 = Var("v1_dct", DICT("str", v1))
     p2 = Var("p2", "bool")
 
     do_one = Method("do_one", params=[v1, v2])
