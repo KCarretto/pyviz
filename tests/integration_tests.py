@@ -67,5 +67,5 @@ def sample_classes() -> Tuple[Class]:
 
 if __name__ == "__main__":
     g = ClassDotRenderer(name="graph_test", label="Test")
-    g.classes = sample_classes()
+    sample_classes()
     print(g.render())

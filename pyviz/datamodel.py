@@ -2,7 +2,7 @@
 Define intermediary data structures that store state for objects.
 """
 from dataclasses import dataclass, field
-from typing import List, Optional, TypeVar, Union
+from typing import ClassVar, List, Optional, Type, TypeVar, Union
 
 
 def _coerce_type(value: Optional[Union[str, "Var", "Method", "Class"]]) -> str:
@@ -31,6 +31,23 @@ def _coerce_name(value: Union[str, "Var", "Method", "Class"]) -> str:
     if hasattr(value, "name"):
         return value.name
     return str(value)
+
+
+class NodeMeta(type):
+    """Tracks instantiation of nodes"""
+
+    _class_registry: ClassVar[List["Class"]] = []
+
+    def __call__(cls: Type["Class"], *args, **kwargs):
+        """Hooks class instantiation."""
+        instance = super().__call__(*args, **kwargs)
+        NodeMeta._class_registry.append(instance)
+        return instance
+
+    @classmethod
+    def get_class_instances(cls) -> List["Class"]:
+        """Returns all instances of Class"""
+        return NodeMeta._class_registry
 
 
 @dataclass
@@ -71,7 +88,7 @@ TClass = TypeVar("TClass", bound="T")
 
 
 @dataclass
-class Class:
+class Class(metaclass=NodeMeta):
     name: str
     properties: List[Var] = field(default_factory=list)
     methods: List[Method] = field(default_factory=list)

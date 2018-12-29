@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 from dataclasses import asdict
 
 from pyviz.renderers.renderer import IRenderer
-from pyviz.datamodel import Var, Method, Class
+from pyviz.datamodel import NodeMeta, Var, Method, Class
 
 
 class GraphvizRenderer(IRenderer):
@@ -40,5 +40,7 @@ class ClassDotRenderer(GraphvizRenderer):
         Returns:
             Dict[str, Any]: A map of template attributes needed to render a graphviz graph.
         """
+        if not self.classes:
+            self.classes = NodeMeta.get_class_instances()
         return {"graph": self.graph_attributes, "classes": [asdict(obj) for obj in self.classes]}
 
