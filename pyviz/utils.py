@@ -1,41 +1,85 @@
 """
-Collection of helper functions for semantic sugar.
+Wrapper functions to assist the datamodel.
 """
-import re
+from copy import copy
+from enum import Enum
+from typing import Any
 
-from pyviz.structure.base import BaseNode
-from pyviz.structure.objects import Property, Method, Class
-
-
-def Wrap(wrapper: str, *args) -> str:
-    types = []
-    for arg in args:
-        if hasattr(arg, "name"):
-            types.append(arg.name)
-        else:
-            types.append(arg)
-    return f"{wrapper}[{', '.join(types)}]"
-
-
-def Cls(method: Method) -> Method:
-    """
-    Return the method as a classmethod.
-    """
-    method.is_classmethod = True
-    return method
+from pyviz.datamodel import Var, Method, Class
 
 
 def Async(method: Method) -> Method:
     """
-    Return a method as an async method.
+    Args:
+        method (Method): The method to mark as asynchronous.
+    Returns:
+        Method: An asynchronous copy of the method.
     """
-    method.is_async = True
-    return method
+    m = copy(method)
+    m.is_async = True
+    return m
+
+
+def Cls(method: Method) -> Method:
+    """
+    Args:
+        method (Method): The method to mark as a classmethod.
+    Returns:
+        Method: A classmethod copy of the method.
+    """
+    m = copy(method)
+    m.is_cls = True
+    return m
 
 
 def Abstract(method: Method) -> Method:
     """
-    Return a method as an abstract method.
+    Args:
+        method (Method): The method to mark as a abstract.
+    Returns:
+        Method: An abstract copy of the method.
     """
-    method.is_abstract = True
-    return method
+    m = copy(method)
+    m.is_abstract = True
+    return m
+
+
+class Wrapper(Enum):
+    TYPE: str = "Type"
+    UNION: str = "Union"
+    CALLABLE: str = "Callable"
+    OPTIONAL: str = "Optional"
+    DICT: str = "Dict"
+    LIST: str = "List"
+    TUPLE: str = "Tuple"
+    NAMED_TUPLE: str = "NamedTuple"
+    GENERIC: str = "Generic"
+    SEQUENCE: str = "Sequence"
+    MAPPING: str = "Mapping"
+    ITERABLE: str = "Iterable"
+    CLASSVAR: str = "ClassVar"
+
+
+def Wrap(wrapper: Wrapper, *args) -> str:
+    """
+    Coerce the arguments and then wrap them in the given wrapper.
+
+    Args:
+        wrapper (Wrapper): The type of wrapper to use.
+        *args: Positional arguments, may include str, Var, Method, Class. Other types with be cast
+            using str()
+    Returns:
+        str: The string with coerced arguments wrapped by the wrapper.
+    """
+
+    def _wrap_coerce(arg: Any) -> str:
+        if isinstance(arg, str):
+            return arg
+        if isinstance(arg, (Class, Method)):
+            return arg.name
+        if isinstance(arg, (Var)):
+            return arg.type
+        return str(arg)
+
+    params = ", ".join(_wrap_coerce(arg) for arg in args)
+    return f"{wrapper.value}[{params}]"

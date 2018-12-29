@@ -1,4 +1,4 @@
-from pyviz import Graph, GraphConfig
+from pyviz import ClassDotRenderer
 from tests.sample_objects import Country, IPerson, Citizen
 
 
@@ -7,12 +7,10 @@ def test_create_graph():
     Ensure field descriptors work properly. Depends on gen_example.
     """
 
-    config = GraphConfig.default()
-    config.attributes.graph["label"] = "PyViz Graph"
-    g = Graph(config)
-    g.add_nodes([Country, IPerson, Citizen])
+    g = ClassDotRenderer(label="Test")
+    g.classes = [Country, IPerson, Citizen]
 
-    Citizen.inherits(IPerson)
+    # Citizen.inherits(IPerson)
     # Country.depends_on(Citizen)
 
     lines = g.render().split("\n")
@@ -31,12 +29,6 @@ def test_create_graph():
 
 
 if __name__ == "__main__":
-    config = GraphConfig.default()
-
-    g = Graph(config)
-    g.add_nodes([Country, IPerson, Citizen])
-
-    Citizen.inherits(IPerson)
-    # Country.depends_on(Citizen)
-
+    g = ClassDotRenderer(name="graph_test", label="Test")
+    g.classes = [Country, IPerson, Citizen]
     print(g.render())

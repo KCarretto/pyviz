@@ -1,32 +1,37 @@
-digraph g {
-	label="PyViz Graph"
-	labelloc="top"
-	
-	// Objects
-	Country [label=< {<B>Country</B>
-		|<B>Properties</B>
-			<BR/><BR/>name: <FONT COLOR="mediumseagreen">str</FONT>
-			<BR ALIGN="LEFT"/>population: <FONT COLOR="mediumseagreen">int</FONT>
-	} > shape="record"];
-	IPerson [label=< {<B>IPerson</B>
-		|<B>Properties</B>
-			<BR/><BR/>name: <FONT COLOR="mediumseagreen">str</FONT>
-			<BR ALIGN="LEFT"/>age: <FONT COLOR="mediumseagreen">int</FONT>
-		|<B>Abstract Methods</B>
-			<BR/><BR/><I>celebrate(amount: <FONT COLOR="mediumseagreen">int</FONT>)</I>: <FONT COLOR="red">None</FONT>
-	} > shape="record"];
-	Citizen [label=< {<B>Citizen</B>
-		|<B>Properties</B>
-			<BR/><BR/>happiness: <FONT COLOR="mediumseagreen">int</FONT>
-		|<B>Methods</B>
-			<BR/><BR/>celebrate(amount: <FONT COLOR="mediumseagreen">int</FONT>): <FONT COLOR="red">None</FONT>
-	} > shape="record"];
-	
-	// Dependencies
-	edge [style="dashed"];
-	Country -> Citizen;
-	
-	// Inheritance
-	edge [style="dashed" arrowhead="empty"];
-	Citizen -> IPerson;
+digraph graph_test {
+
+    labelloc="top"
+    name="graph_test"
+    label="Test"
+
+    /*
+     * NODE DEFINITIONS
+     */
+
+    /* Classes */
+    Country [
+        shape=none
+        portPos="t"
+
+    ]
+    IPerson [
+        shape=none
+        portPos="t"
+
+    ]
+    Citizen [
+        shape=none
+        portPos="t"
+        label=< <TABLE port="t" border="0" cellborder="1" cellspacing="0">
+                <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>Citizen</B></FONT></TD></TR>
+                <TR>
+                    <TD<I>Methods</I></TD>
+                    <TD>
+                    <BR ALIGN="LEFT"/>celebrate(amount: int, time: int): None
+                    <BR ALIGN="LEFT"/>pay_taxes(income: int, state: str): int
+                    </TD>
+                </TR>
+            </TABLE>
+        >
+    ]
 }

@@ -1,0 +1,15 @@
+{% import "class.j2" as class %}
+
+digraph {{ graph.get('name', 'g') }} {
+
+    {% include "graph_attrs.j2" %}
+
+    /*
+     * NODE DEFINITIONS
+     */
+
+    /* Classes */
+    {% for node in classes %}
+    {{ class.build(node)|indent() }}
+    {% endfor %}
+}
