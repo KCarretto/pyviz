@@ -10,7 +10,7 @@ setup(
     author_email="kcarretto@gmail.com",
     version="0.0.1",
     packages=find_packages(),
-    install_requires=[],
+    install_requires=["typing-extensions==3.6.6"],
     license="".join(open("./LICENSE").readlines()),
     long_description=open("README.md").read(),
     setup_requires=["pytest-runner"],
