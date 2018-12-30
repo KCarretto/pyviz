@@ -39,6 +39,58 @@
     {{- ': '}} {{- color_type(rtype)}}
 {%- endmacro -%}
 
+{# BUILD DECORATOR #}
+{%- macro build_decorator(decorator) -%}
+{%- set name = decorator["name"] -%}
+{%- set type = decorator["type"] -%}
+{%- set params = decorator.get("params", []) -%}
+{%- set description = decorator.get("description") -%}
+{{name}} [
+    shape=component
+    label=< <FONT POINT-SIZE="18" COLOR="orange2"><B>@{{name}}  </B></FONT>(
+        {%- for param in params -%}
+            {{- param["name"] }}: {{ color_type(param["type"]) }}
+            {%- if not loop.last %}
+                {{- ', '}}
+            {%- endif -%}
+        {%- endfor -%}
+        {{- '): ' + color_type(type)}}
+        {%- if description is not none -%}
+        <BR/><BR/>{{wrap_str(description)}}<BR ALIGN="left"/>
+        {%- endif -%}
+    >
+];
+{%- endmacro -%}
+
+{# BUILD MODULE METHOD #}
+{%- macro build_module_method(method) -%}
+    {%- set name = method["name"] -%}
+    {%- set params = method.get("params", []) -%}
+    {%- set rtype = method.get("type", "None") -%}
+    {%- set is_async = method.get("is_async", false) -%}
+{{name}} [
+    shape=component
+    label=<
+        {# Async #}
+        {%- if is_async == true -%}
+            {{- '<FONT COLOR="darkorchid1">async </FONT>' -}}
+        {%- endif -%}
+
+        {# Name #}
+        {{- '<FONT POINT-SIZE="18"><B>' + name + ' </B></FONT> (' -}}
+
+        {# Signature #}
+        {%- for param in params -%}
+            {{- param["name"] }}: {{ color_type(param["type"]) }}
+            {%- if not loop.last %}
+            {{- ', '}}
+            {%- endif -%}
+        {%- endfor -%}
+        {{- '): '}} {{- color_type(rtype)}}
+    >
+];
+{%- endmacro -%}
+
 {# BUILD CLASS #}
 {%- macro build_class(class) -%}
 {%- set name = class["name"] -%}

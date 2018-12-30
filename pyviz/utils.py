@@ -3,19 +3,25 @@ Wrapper functions to assist the datamodel.
 """
 from copy import copy
 from enum import Enum
-from typing import Any
+from typing import Any, TypeVar
 
-from pyviz.datamodel import Var, Method, Class
+from pyviz.datamodel import Var, Method, ModuleMethod, Class
+
+AwaitableMethod = TypeVar("AwaitableMethod", Method, ModuleMethod)
 
 
-def Async(method: Method) -> Method:
+def Async(method: AwaitableMethod) -> AwaitableMethod:
     """
     Args:
-        method (Method): The method to mark as asynchronous.
+        method (AwaitableMethod): The method to mark as asynchronous.
     Returns:
-        Method: An asynchronous copy of the method.
+        AwaitableMethod: An asynchronous method. Copy if not module method.
     """
-    m = copy(method)
+    if not isinstance(method, ModuleMethod):
+        m = copy(method)
+    else:
+        m = method
+
     m.is_async = True
     return m
 

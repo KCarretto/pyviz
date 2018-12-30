@@ -4,11 +4,13 @@ Define intermediary data structures that store state for objects.
 from dataclasses import dataclass, field
 from typing import ClassVar, List, Optional, Type, TypeVar, Union
 
+COMPONENT = Union["Class", "ModuleMethod", "Decorator"]
 
-def _coerce_type(value: Optional[Union[str, "Var", "Method", "Class"]]) -> str:
+
+def _coerce_type(value: Optional[Union[str, "Var", "Method", "BaseComponent"]]) -> str:
     """
     Args:
-        value (Optional[Union[str, Var, Method, Class]]): The value to coerce.
+        value (Optional[Union[str, Var, Method, BaseComponent]]): The value to coerce.
     Returns:
         str: The coerced type of the value
     """
@@ -21,10 +23,10 @@ def _coerce_type(value: Optional[Union[str, "Var", "Method", "Class"]]) -> str:
     return str(value)
 
 
-def _coerce_name(value: Union[str, "Var", "Method", "Class"]) -> str:
+def _coerce_name(value: Union[str, "Var", "Method", COMPONENT]) -> str:
     """
     Args:
-        value (Union[str, Var, Method, Class]): The value to coerce.
+        value (Union[str, Var, Method, COMPONENT]): The value to coerce.
     Returns:
         str: The coerced name of the value
     """
@@ -33,21 +35,38 @@ def _coerce_name(value: Union[str, "Var", "Method", "Class"]) -> str:
     return str(value)
 
 
-class NodeMeta(type):
+class ComponentMeta(type):
     """Tracks instantiation of nodes"""
 
     _class_registry: ClassVar[List["Class"]] = []
+    _decorator_registry: ClassVar[List["Decorator"]] = []
+    _module_method_registry: ClassVar[List["ModuleMethod"]] = []
 
-    def __call__(cls: Type["Class"], *args, **kwargs):
+    def __call__(cls: Type[COMPONENT], *args, **kwargs):
         """Hooks class instantiation."""
         instance = super().__call__(*args, **kwargs)
-        NodeMeta._class_registry.append(instance)
+        if isinstance(instance, Class):
+            ComponentMeta._class_registry.append(instance)
+        elif isinstance(instance, Decorator):
+            ComponentMeta._decorator_registry.append(instance)
+        elif isinstance(instance, ModuleMethod):
+            ComponentMeta._module_method_registry.append(instance)
         return instance
 
     @classmethod
     def get_class_instances(cls) -> List["Class"]:
         """Returns all instances of Class"""
-        return NodeMeta._class_registry
+        return ComponentMeta._class_registry
+
+    @classmethod
+    def get_decorator_instances(cls) -> List["Decorator"]:
+        """Returns all instances of Class"""
+        return ComponentMeta._decorator_registry
+
+    @classmethod
+    def get_module_method_instances(cls) -> List["ModuleMethod"]:
+        """Returns all instances of Class"""
+        return ComponentMeta._module_method_registry
 
 
 @dataclass
@@ -85,7 +104,53 @@ class Method:
 
 
 @dataclass
-class Class(metaclass=NodeMeta):
+class Decorator(metaclass=ComponentMeta):
+    """
+    Attributes:
+        name(str): The name of the decorator function.
+        type(str): The type to be decorated, i.e. Callable or Class.
+        params(List[Var]): A list of parameters needed for the decorator.
+        description (Optional[str]): An optional description of the decorator.
+        module (Optional[str]): Optionally customize the module name for the decorator.
+        subpackage (Optional[str]): Optionally specify a subpackage the decorator should
+            be located in.
+    """
+
+    name: str
+    type: str
+    params: List[Var] = field(default_factory=list)
+    description: Optional[str] = None
+    module: Optional[str] = None
+    subpackage: Optional[str] = None
+
+    def __post_init__(self):
+        """
+        Attempt to coerce types.
+        """
+        self.name: str = _coerce_name(self.name)
+        self.type: str = _coerce_type(self.type)
+
+
+@dataclass
+class ModuleMethod(metaclass=ComponentMeta):
+    name: str
+    type: str = field(default="None")
+    params: Optional[List[Var]] = field(default_factory=list)
+    description: Optional[str] = None
+    module: Optional[str] = None
+    subpackage: Optional[str] = None
+    is_async: bool = field(default=False, init=False)
+
+    def __post_init__(self):
+        """
+        Attempt to coerce types.
+        """
+        self.name: str = _coerce_name(self.name)
+        self.type: str = _coerce_type(self.type)
+
+
+@dataclass
+class Class(metaclass=ComponentMeta):
     """
     Attributes:
         name (str): The name of the class.

@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from pyviz import ClassDotRenderer, Var, Method, Class, Abstract, Async, Cls
+from pyviz import CodeDotRenderer, Var, Method, Class, Abstract, Async, Cls
 from pyviz.types import LIST, DICT
 
 
@@ -9,7 +9,7 @@ def test_create_graph():
     Ensure field descriptors work properly. Depends on gen_example.
     """
 
-    g = ClassDotRenderer(label="Test")
+    g = CodeDotRenderer(label="Test")
     g.classes = sample_classes()
 
     # Citizen.inherits(IPerson)
@@ -71,6 +71,6 @@ def sample_classes() -> Tuple[Class]:
 
 
 if __name__ == "__main__":
-    g = ClassDotRenderer(name="graph_test", label="Test")
+    g = CodeDotRenderer(name="graph_test", label="Test")
     sample_classes()
     print(g.render())

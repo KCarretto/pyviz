@@ -1,11 +1,11 @@
 """
 Collection of renderers that transform the datamodel into .dot files renderable by graphviz.
 """
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, ClassVar
 from dataclasses import asdict
 
 from pyviz.renderers.renderer import IRenderer
-from pyviz.datamodel import NodeMeta, Var, Method, Class
+from pyviz.datamodel import ComponentMeta, Var, Method, Class, ModuleMethod, Decorator
 
 
 class GraphvizRenderer(IRenderer):
@@ -18,18 +18,23 @@ class GraphvizRenderer(IRenderer):
         return {"labelloc": "top"}
 
 
-class ClassDotRenderer(GraphvizRenderer):
+class CodeDotRenderer(GraphvizRenderer):
     """
-    Render a Graphviz graph from Classes.
+    Render a Graphviz graph representing python code structure from the datamodel.
     """
 
-    template_name: str = "class_graph.j2"
-    template_dir: str = "graphviz"
+    template_name: ClassVar[str] = "code_graph.j2"
+    template_dir: ClassVar[str] = "graphviz"
 
     graph_attributes: Dict[str, str]
+    classes: List[Class]
+    module_methods: List[ModuleMethod]
+    decorators: List[Decorator]
 
     def __init__(self, graph_attributes: Optional[Dict[str, str]] = None, **kwargs):
         self.classes = []
+        self.module_methods = []
+        self.decorators = []
         self.graph_attributes = self.graph_defaults
         self.graph_attributes.update(graph_attributes if graph_attributes else {})
         self.graph_attributes.update(kwargs)
@@ -41,9 +46,21 @@ class ClassDotRenderer(GraphvizRenderer):
             Dict[str, Any]: A map of template attributes needed to render a graphviz graph.
         """
         if not self.classes:
-            self.classes = NodeMeta.get_class_instances()
+            self.classes = ComponentMeta.get_class_instances()
+        if not self.module_methods:
+            self.module_methods = ComponentMeta.get_module_method_instances()
+        if not self.decorators:
+            self.decorators = ComponentMeta.get_decorator_instances()
 
-        attrs = {"graph": self.graph_attributes, "classes": [], "subpackages": {}}
+        attrs = {
+            "graph": self.graph_attributes,
+            "classes": [],
+            "module_methods": [],
+            "decorators": [],
+            "subpackages": {},  # Map of subpackage name to node name, regardless of node type
+        }
+
+        # Build Classes
         for node in self.classes:
             attrs["classes"].append(asdict(node))
             if node.subpackage:
@@ -51,5 +68,20 @@ class ClassDotRenderer(GraphvizRenderer):
                     attrs["subpackages"][node.subpackage] = []
                 attrs["subpackages"][node.subpackage].append(node.name)
 
-        return attrs
+        # Build Module Methods
+        for node in self.module_methods:
+            attrs["module_methods"].append(asdict(node))
+            if node.subpackage:
+                if not attrs["subpackages"].get(node.subpackage):
+                    attrs["subpackages"][node.subpackage] = []
+                attrs["subpackages"][node.subpackage].append(node.name)
 
+        # Build Decorators
+        for node in self.decorators:
+            attrs["decorators"].append(asdict(node))
+            if node.subpackage:
+                if not attrs["subpackages"].get(node.subpackage):
+                    attrs["subpackages"][node.subpackage] = []
+                attrs["subpackages"][node.subpackage].append(node.name)
+
+        return attrs

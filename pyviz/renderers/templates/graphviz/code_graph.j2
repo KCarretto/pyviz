@@ -1,10 +1,16 @@
 {% extends "graph.j2" %}
 {% from "macros/attributes.j2" import build_attrs %}
-{% from "macros/nodes.j2" import build_class %}
+{% from "macros/nodes.j2" import build_class, build_module_method, build_decorator %}
 {% from "macros/edges.j2" import build_parents, build_dependencies %}
 
 {# BUILD #}
-{% set built = namespace(classes="", parents="", dependencies="") %}
+{% set built = namespace(classes="", decorators="", module_methods="", parents="", dependencies="") %}
+{% for decorator in decorators %}
+    {% set built.decorators = built.decorators + build_decorator(decorator) %}
+{% endfor %}
+{% for module_method in module_methods %}
+    {% set built.module_methods = built.module_methods + build_module_method(module_method) %}
+{% endfor %}
 {% for node in classes %}
     {% set class_node = build_class(node) %}
     {% set parent_edges = build_parents(node) %}
@@ -37,30 +43,53 @@
    subgraph cluster_0LEGEND {
         label=< <FONT POINT-SIZE="28"><B>Legend</B></FONT> >;
 
-        LEGEND_inheritance_parent [shape=rect label="Parent Class"];
-        LEGEND_inheritance_child [shape=rect label="Child Class"];
-        LEGEND_dependency_a [shape=rect label="Class A"];
-        LEGEND_dependency_b [shape=rect label="Class B"];
-        LEGEND_meta_a [shape=rect label="Metaclass"];
-        LEGEND_meta_b [shape=rect label="Class(metaclass=Metaclass)"];
+        {rank=same;
+            LEGEND_inheritance_parent [shape=rect label="Parent Class"];
+            LEGEND_dependency_a [shape=rect label="Class A"];
+            LEGEND_meta_a [shape=rect label="Metaclass"];
+            LEGEND_SAMPLE_DECORATOR [
+                shape=component
+                label=< <FONT POINT-SIZE="18" COLOR="orange2"><B>@Decorator  </B></FONT>(OptionalDecoratorArgs): <FONT COLOR="dodgerblue">TypeToWrap</FONT>>
+            ];
 
+            
+        }
+        LEGEND_SAMPLE_MODULE_METHOD [
+                shape=component
+                label=<
+            <FONT POINT-SIZE="18"><B>ModuleMethod  </B></FONT> (param: <FONT COLOR="dodgerblue">type</FONT>): <FONT COLOR="dodgerblue">ReturnType</FONT>
+                >
+            ];
+        LEGEND_inheritance_child [shape=rect label="Child Class"];
+        LEGEND_dependency_b [shape=rect label="Class B"];
+        LEGEND_meta_b [shape=rect label="Class(metaclass=Metaclass)"];
+        
+        LEGEND_SAMPLE_DECORATOR -> LEGEND_SAMPLE_MODULE_METHOD [style=invis];
         LEGEND_inheritance_parent -> LEGEND_inheritance_child [fontsize=20 style=dashed arrowhead=empty label="Inherited by"];
         LEGEND_dependency_a -> LEGEND_dependency_b [fontsize=20 label="Dependency of"];
         LEGEND_meta_a -> LEGEND_meta_b [fontsize=20 style=dashed color="royalblue2" label="Metaclass for"]
+
+       
     }
 {% endblock %}
 
 {% block nodes %}
 /* Classes */
-{{ built.classes -}}
+{{ built.classes }}
+
+/* Decorators */
+{{ built.decorators }}
+
+/* Module Methods */
+{{ built.module_methods }}
 {% endblock %}
 
 {% block clusters %}
-    {%- for name, classes in subpackages.items() -%}
+    {%- for name, nodes in subpackages.items() -%}
         {{- '\nsubgraph cluster_' + name +' {' -}}
         {{- '\n\tlabel=< <FONT POINT-SIZE="26">' + name + '</FONT> >' -}}
         {{- '\n\tstyle=dashed\n' -}}
-        {%- for node in classes -%}
+        {%- for node in nodes -%}
         {{- '\n\t\t' + node -}}
         {%- endfor -%}
         {{- '\n}' -}}

@@ -40,10 +40,14 @@ ITERABLE = partial(wrap, "Iterable")
 CLASS_VAR = partial(wrap, "ClassVar")
 
 
-def CALLABLE(params: Optional[List[Union[str, Var, Class]]], return_type: Union[str, Class]) -> str:
-    """Callable[ [params], return_type] wrapper."""
+def CALLABLE(*params, return_type: Optional[Union[str, Class]] = None) -> str:
+    """
+    Callable[ [params], return_type] wrapper.
+    """
+    if not return_type:
+        return_type = "None"
     if params:
-        params: str = wrap(None, params)
+        params: str = wrap(None, *params)
         return wrap("Callable", params, return_type)
     else:
         return wrap("Callable", "[]", return_type)
