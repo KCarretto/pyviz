@@ -35,6 +35,18 @@
 {{ built.classes -}}
 {% endblock %}
 
+{% block clusters %}
+    {%- for name, classes in subpackages.items() -%}
+        {{- '\nsubgraph cluster_' + name +' {' -}}
+        {{- '\n\tlabel=< <FONT POINT-SIZE="26">' + name + '</FONT> >' -}}
+        {{- '\n\tstyle=dashed\n' -}}
+        {%- for node in classes -%}
+        {{- '\n\t\t' + node -}}
+        {%- endfor -%}
+        {{- '\n}' -}}
+    {%- endfor -%}
+{% endblock %}
+
 {% block edges %}
 /* Inheritance */
 {{ built.parents -}}

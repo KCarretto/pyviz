@@ -17,6 +17,14 @@ digraph {{ graph.get('name', 'g') }} {
     {% block nodes %}{% endblock %}
     {% endfilter %}
 
+    /*
+     * CLUSTER DEFINITIONS
+     */
+
+    {% filter indent(width=4, first=true) %}
+    {% block clusters %}{% endblock %}
+    {% endfilter %}
+
 
     /*
      * EDGE DEFINITIONS

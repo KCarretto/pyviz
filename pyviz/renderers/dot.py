@@ -42,5 +42,14 @@ class ClassDotRenderer(GraphvizRenderer):
         """
         if not self.classes:
             self.classes = NodeMeta.get_class_instances()
-        return {"graph": self.graph_attributes, "classes": [asdict(obj) for obj in self.classes]}
+
+        attrs = {"graph": self.graph_attributes, "classes": [], "subpackages": {}}
+        for node in self.classes:
+            attrs["classes"].append(asdict(node))
+            if node.subpackage:
+                if not attrs["subpackages"].get(node.subpackage):
+                    attrs["subpackages"][node.subpackage] = []
+                attrs["subpackages"][node.subpackage].append(node.name)
+
+        return attrs
 

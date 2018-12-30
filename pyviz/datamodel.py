@@ -92,6 +92,9 @@ class Class(metaclass=NodeMeta):
         properties (List[Var]): A list of public properties on the class.
         methods (List[Method]): A list of public methods on the class.
         description (Optional[str]): An optional description of the class.
+        module (Optional[str]): Optionally customize the module name for the class.
+            Allows for classes to be stored in the same module.
+        subpackage (Optional[str]): Optionally specify a subpackage the Class should be located in.
         metaclass (Optional[Class]): Optionally specify a metaclass.
         ext_parent (Optional[str]): Specify a parent class from an external module. Absolute import.
         parents (List[Class]): Specify a list of parent classes.
@@ -102,6 +105,8 @@ class Class(metaclass=NodeMeta):
     properties: List[Var] = field(default_factory=list)
     methods: List[Method] = field(default_factory=list)
     description: Optional[str] = None
+    module: Optional[str] = None
+    subpackage: Optional[str] = None
     metaclass: Optional["Class"] = None
     ext_parent: Optional[str] = None
     parents: List["Class"] = field(init=False, default_factory=list)
