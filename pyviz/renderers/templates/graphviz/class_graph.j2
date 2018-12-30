@@ -30,6 +30,26 @@
 {{ build_attrs(graph) -}}
 {% endblock %}
 
+{% block legend %}
+    /*
+    * LEGEND
+    */
+   subgraph cluster_0LEGEND {
+        label=< <FONT POINT-SIZE="28"><B>Legend</B></FONT> >;
+
+        LEGEND_inheritance_parent [shape=rect label="Parent Class"];
+        LEGEND_inheritance_child [shape=rect label="Child Class"];
+        LEGEND_dependency_a [shape=rect label="Class A"];
+        LEGEND_dependency_b [shape=rect label="Class B"];
+        LEGEND_meta_a [shape=rect label="Metaclass"];
+        LEGEND_meta_b [shape=rect label="Class(metaclass=Metaclass)"];
+
+        LEGEND_inheritance_parent -> LEGEND_inheritance_child [fontsize=20 style=dashed arrowhead=empty label="Inherited by"];
+        LEGEND_dependency_a -> LEGEND_dependency_b [fontsize=20 label="Dependency of"];
+        LEGEND_meta_a -> LEGEND_meta_b [fontsize=20 style=dashed color="royalblue2" label="Metaclass for"]
+    }
+{% endblock %}
+
 {% block nodes %}
 /* Classes */
 {{ built.classes -}}

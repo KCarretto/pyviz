@@ -9,6 +9,11 @@ digraph {{ graph.get('name', 'g') }} {
     {% endfilter %}
 
 
+    {% filter indent(width=4, first=true) %}
+    {% block legend %}{% endblock %}
+    {% endfilter %}
+
+
     /*
      * NODE DEFINITIONS
      */
