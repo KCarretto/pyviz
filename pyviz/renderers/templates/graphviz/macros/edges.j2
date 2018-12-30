@@ -3,6 +3,9 @@
     {%- for parent in node.parents -%}
         {{ parent.name}} -> {{node.name}} [ style=dashed arrowhead=empty];
     {% endfor -%}
+    {%- if node.metaclass is not none -%}
+        {{ node.metaclass.name }} -> {{node.name}} [style=dashed color="royalblue2"];
+    {%- endif -%}
 {%- endmacro -%}
 
 {# BUILD DEPENDENCY EDGES #}
