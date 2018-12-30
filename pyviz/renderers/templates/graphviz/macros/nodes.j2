@@ -1,4 +1,11 @@
 {% from "macros/color.j2" import color_type %}
+
+{# FORMAT LONG STR #}
+{%- macro wrap_str(text) -%}
+{{text|wordwrap(wrapstring="<BR ALIGN='LEFT'/>")}}<BR ALIGN='LEFT'/>
+{%- endmacro -%}
+
+
 {# BUILD VAR #}
 {%- macro build_var(var) -%}
 {{var["name"]}}: {{ color_type(var["type"]) }}
@@ -44,14 +51,14 @@
     portPos="t"
     label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
             {%- if ext_parent is not none -%}
-            <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>{{name}} </B>({{ext_parent}})</FONT></TD></TR>
+            <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>{{name}} </B></FONT><FONT POINT-SIZE="16">({{ext_parent}})</FONT></TD></TR>
             {%- else -%}
             <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>{{name}}</B></FONT></TD></TR>
             {%- endif -%}
             {%- if description is not none -%}
             <TR>
                 <TD><I>Description</I></TD>
-                <TD align="left">{{description}}</TD>
+                <TD align="left">{{wrap_str(description)}}</TD>
             </TR>
             {%- endif -%}
             {%- if properties -%}

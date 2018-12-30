@@ -1,13 +1,13 @@
 {# BUILD INHERITANCE EDGES #}
 {%- macro build_parents(node) -%}
     {%- for parent in node.parents -%}
-        {{ parent.name}} -> {{node.name}} [style=dashed arrowhead=empty];
+        {{ parent.name}} -> {{node.name}} [ style=dashed arrowhead=empty];
     {% endfor -%}
 {%- endmacro -%}
 
 {# BUILD DEPENDENCY EDGES #}
 {%- macro build_dependencies(node) -%}
     {%- for dep in node.deps -%}
-        {{node.name}} -> {{ dep.name}}  [constraint=false];
+        {{ dep.name}} -> {{node.name}}
     {% endfor -%}
 {%- endmacro -%}
