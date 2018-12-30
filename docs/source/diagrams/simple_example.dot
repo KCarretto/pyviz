@@ -17,73 +17,77 @@ digraph graph_test {
     I [
         shape=none
         portPos="t"
-        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10"><TR><TD colspan='2'><FONT POINT-SIZE="18"><B>I </B>(typing_extensions.Protocol)</FONT></TD></TR><TR>
-                    <TD><I>Description</I></TD>
-                    <TD align="left">Interface I</TD>
-                </TR><TR>
-                    <TD><I>Properties</I></TD>
-                    <TD align="left">v1_dct: <FONT COLOR="dodgerblue">Dict[str, str]</FONT><BR ALIGN="LEFT"/></TD>
-                </TR><TR>
-                    <TD><I>Abstract Methods</I></TD>
-                    <TD align="left"><I>do_one</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="red">None</FONT><BR ALIGN="LEFT"/><I>do_two</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/><I>do_3</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>, v3: <FONT COLOR="dodgerblue">List[str]</FONT>): <FONT COLOR="dodgerblue">str</FONT><BR ALIGN="LEFT"/></TD>
-                </TR></TABLE>
+        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+            <TR><TD colspan="2"><FONT POINT-SIZE="18"><B>I</B></FONT> <FONT POINT-SIZE="16">(<FONT POINT-SIZE="16">typing_extensions.Protocol</FONT>)</FONT></TD></TR><TR>
+                <TD><I>Description</I></TD>
+                <TD align="left">Interface I<BR ALIGN='LEFT'/></TD>
+            </TR><TR>
+                <TD><I>Properties</I></TD>
+                <TD align="left">v1_dct: <FONT COLOR="dodgerblue">Dict[str, str]</FONT><BR ALIGN="LEFT"/></TD>
+            </TR><TR>
+                <TD><I>Abstract Methods</I></TD>
+                <TD align="left"><I>do_one</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="red">None</FONT><BR ALIGN="LEFT"/><I>do_two</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/><I>do_3</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>, v3: <FONT COLOR="dodgerblue">List[str]</FONT>): <FONT COLOR="dodgerblue">str</FONT><BR ALIGN="LEFT"/></TD>
+            </TR></TABLE>
         >
     ]; /* End I */
 
     A [
         shape=none
         portPos="t"
-        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10"><TR><TD colspan='2'><FONT POINT-SIZE="18"><B>A</B></FONT></TD></TR><TR>
-                    <TD><I>Description</I></TD>
-                    <TD align="left">Class A</TD>
-                </TR><TR>
-                    <TD><I>Properties</I></TD>
-                    <TD align="left">v1_dct: <FONT COLOR="dodgerblue">Dict[str, str]</FONT><BR ALIGN="LEFT"/>v3: <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/></TD>
-                </TR><TR>
-                    <TD><I>Abstract Methods</I></TD>
-                    <TD align="left"><I>do_one</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="red">None</FONT><BR ALIGN="LEFT"/><I>do_two</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/></TD>
-                </TR><TR>
-                    <TD><I>Methods</I></TD>
-                    <TD align="left">do_3(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>, v3: <FONT COLOR="dodgerblue">List[str]</FONT>): <FONT COLOR="dodgerblue">str</FONT><BR ALIGN="LEFT"/>
-                    </TD>
-                </TR></TABLE>
+        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+            <TR><TD colspan="2"><FONT POINT-SIZE="18"><B>A</B></FONT></TD></TR><TR>
+                <TD><I>Description</I></TD>
+                <TD align="left">Class A<BR ALIGN='LEFT'/></TD>
+            </TR><TR>
+                <TD><I>Properties</I></TD>
+                <TD align="left">v1_dct: <FONT COLOR="dodgerblue">Dict[str, str]</FONT><BR ALIGN="LEFT"/>v3: <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/></TD>
+            </TR><TR>
+                <TD><I>Abstract Methods</I></TD>
+                <TD align="left"><I>do_one</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="red">None</FONT><BR ALIGN="LEFT"/><I>do_two</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/></TD>
+            </TR><TR>
+                <TD><I>Methods</I></TD>
+                <TD align="left">do_3(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>, v3: <FONT COLOR="dodgerblue">List[str]</FONT>): <FONT COLOR="dodgerblue">str</FONT><BR ALIGN="LEFT"/>
+                </TD>
+            </TR></TABLE>
         >
     ]; /* End A */
 
     B [
         shape=none
         portPos="t"
-        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10"><TR><TD colspan='2'><FONT POINT-SIZE="18"><B>B</B></FONT></TD></TR><TR>
-                    <TD><I>Description</I></TD>
-                    <TD align="left">Class B</TD>
-                </TR><TR>
-                    <TD><I>Properties</I></TD>
-                    <TD align="left">v1_dct: <FONT COLOR="dodgerblue">Dict[str, str]</FONT><BR ALIGN="LEFT"/>v3: <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/>p2: <FONT COLOR="dodgerblue">bool</FONT><BR ALIGN="LEFT"/></TD>
-                </TR><TR>
-                    <TD><I>Abstract Methods</I></TD>
-                    <TD align="left"><I>do_one</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="red">None</FONT><BR ALIGN="LEFT"/></TD>
-                </TR><TR>
-                    <TD><I>Methods</I></TD>
-                    <TD align="left">do_two(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/>do_3(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>, v3: <FONT COLOR="dodgerblue">List[str]</FONT>): <FONT COLOR="dodgerblue">str</FONT><BR ALIGN="LEFT"/>
-                    </TD>
-                </TR></TABLE>
+        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+            <TR><TD colspan="2"><FONT POINT-SIZE="18"><B>B</B></FONT></TD></TR><TR>
+                <TD><I>Description</I></TD>
+                <TD align="left">Class B<BR ALIGN='LEFT'/></TD>
+            </TR><TR>
+                <TD><I>Properties</I></TD>
+                <TD align="left">v1_dct: <FONT COLOR="dodgerblue">Dict[str, str]</FONT><BR ALIGN="LEFT"/>v3: <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/>p2: <FONT COLOR="dodgerblue">bool</FONT><BR ALIGN="LEFT"/></TD>
+            </TR><TR>
+                <TD><I>Abstract Methods</I></TD>
+                <TD align="left"><I>do_one</I>(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="red">None</FONT><BR ALIGN="LEFT"/></TD>
+            </TR><TR>
+                <TD><I>Methods</I></TD>
+                <TD align="left">do_two(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="dodgerblue">List[str]</FONT><BR ALIGN="LEFT"/>do_3(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>, v3: <FONT COLOR="dodgerblue">List[str]</FONT>): <FONT COLOR="dodgerblue">str</FONT><BR ALIGN="LEFT"/>
+                </TD>
+            </TR></TABLE>
         >
     ]; /* End B */
 
     C [
         shape=none
         portPos="t"
-        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10"><TR><TD colspan='2'><FONT POINT-SIZE="18"><B>C</B></FONT></TD></TR><TR>
-                    <TD><I>Description</I></TD>
-                    <TD align="left">Class C</TD>
-                </TR><TR>
-                    <TD><I>Properties</I></TD>
-                    <TD align="left">v1: <FONT COLOR="dodgerblue">str</FONT><BR ALIGN="LEFT"/>v2: <FONT COLOR="dodgerblue">int</FONT><BR ALIGN="LEFT"/></TD>
-                </TR><TR>
-                    <TD><I>Methods</I></TD>
-                    <TD align="left"><FONT COLOR="darkorchid1">async </FONT>gen_one(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="red">None</FONT><BR ALIGN="LEFT"/>
-                    </TD>
-                </TR></TABLE>
+        label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
+            <TR><TD colspan="2"><FONT POINT-SIZE="18"><B>C</B></FONT></TD></TR><TR>
+                <TD><I>Description</I></TD>
+                <TD align="left">Class C<BR ALIGN='LEFT'/></TD>
+            </TR><TR>
+                <TD><I>Properties</I></TD>
+                <TD align="left">v1: <FONT COLOR="dodgerblue">str</FONT><BR ALIGN="LEFT"/>v2: <FONT COLOR="dodgerblue">int</FONT><BR ALIGN="LEFT"/></TD>
+            </TR><TR>
+                <TD><I>Methods</I></TD>
+                <TD align="left"><FONT COLOR="darkorchid1">async </FONT>gen_one(v1: <FONT COLOR="dodgerblue">str</FONT>, v2: <FONT COLOR="dodgerblue">int</FONT>): <FONT COLOR="red">None</FONT><BR ALIGN="LEFT"/>
+                </TD>
+            </TR></TABLE>
         >
     ]; /* End C */
 
@@ -94,15 +98,15 @@ digraph graph_test {
      */
 
     /* Inheritance */
-    I -> A [style=dashed arrowhead=empty];
+    I -> A [ style=dashed arrowhead=empty];
 
-    A -> B [style=dashed arrowhead=empty];
+    A -> B [ style=dashed arrowhead=empty];
 
     /* Dependencies */
-    B -> C  [constraint=false];
+    C -> B
 
 
-    C -> A  [constraint=false];
+    A -> C
 
 
 }

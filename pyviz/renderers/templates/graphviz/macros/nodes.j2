@@ -43,6 +43,7 @@
 {%- macro build_class(class) -%}
 {%- set name = class["name"] -%}
 {%- set ext_parent = class["ext_parent"] -%}
+{%- set metaclass = class["metaclass"]["name"] -%}
 {%- set description = class.get("description") -%}
 {%- set properties = class.get("properties", []) -%}
 {%- set methods = class.get("methods", []) -%}
@@ -50,57 +51,74 @@
     shape=none
     portPos="t"
     label=<<TABLE port="t" border="0" cellborder="1" cellspacing="0" cellpadding="10">
-            {%- if ext_parent is not none -%}
-            <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>{{name}} </B></FONT><FONT POINT-SIZE="16">({{ext_parent}})</FONT></TD></TR>
-            {%- else -%}
-            <TR><TD colspan='2'><FONT POINT-SIZE="18"><B>{{name}}</B></FONT></TD></TR>
-            {%- endif -%}
-            {%- if description is not none -%}
-            <TR>
-                <TD><I>Description</I></TD>
-                <TD align="left">{{wrap_str(description)}}</TD>
-            </TR>
-            {%- endif -%}
-            {%- if properties -%}
-            <TR>
-                <TD><I>Properties</I></TD>
-                <TD align="left">
-                {%- for property in properties -%}
-                {{- build_var(property) }}<BR ALIGN="LEFT"/>
-                {%- endfor -%}
-                </TD>
-            </TR>
-            {%- endif -%}
-            {%- if methods -%}
-
-            {# BUILD METHODS #}
-            {%- set built_methods = namespace(abstract="", concrete="") -%}
-            {%- for method in methods -%}
-                {%- set built_method = build_method(method) -%}
-                {%- if method.is_abstract -%}
-                {%- set built_methods.abstract = built_methods.abstract + built_method + '<BR ALIGN="LEFT"/>' -%}
-                {%- else -%}
-                {%- set built_methods.concrete = built_methods.concrete + built_method + '<BR ALIGN="LEFT"/>' -%}
+        {# TITLE (metaclass? external parent?) #}
+        {{ '<TR><TD colspan="2"><FONT POINT-SIZE="18"><B>' + name + '</B></FONT>' -}}
+        {%- if ext_parent is not none or metaclass -%}
+            {{- ' <FONT POINT-SIZE="16">(' -}}
+            {%- if metaclass -%}
+                {{- '<FONT COLOR="royalblue2">metaclass</FONT>=' + metaclass -}}
+                {%- if ext_parent -%}
+                    {{- ', ' -}}
                 {%- endif -%}
-            {%- endfor -%}
+            {%- endif -%}
+            {%- if ext_parent -%}
+                {{- '<FONT POINT-SIZE="16">' + ext_parent + '</FONT>' -}}
+            {%- endif -%}
+            {{- ')</FONT>' -}}
+        {%- endif -%}
+        {{- '</TD></TR>' -}}
 
-            {%- if built_methods.abstract -%}
-            <TR>
-                <TD><I>Abstract Methods</I></TD>
-                <TD align="left">
-                {{-built_methods.abstract-}}
-                </TD>
-            </TR>
+        {# DESCRIPTION #}
+        {%- if description is not none -%}
+        <TR>
+            <TD><I>Description</I></TD>
+            <TD align="left">{{wrap_str(description)}}</TD>
+        </TR>
+        {%- endif -%}
+
+        {# PROPERTIES #}
+        {%- if properties -%}
+        <TR>
+            <TD><I>Properties</I></TD>
+            <TD align="left">
+            {%- for property in properties -%}
+                {{- build_var(property) }}<BR ALIGN="LEFT"/>
+            {%- endfor -%}
+            </TD>
+        </TR>
+        {%- endif -%}
+
+        {# METHODS #}
+        {%- if methods -%}
+            {# BUILD #}
+        {%- set built_methods = namespace(abstract="", concrete="") -%}
+        {%- for method in methods -%}
+            {%- set built_method = build_method(method) -%}
+            {%- if method.is_abstract -%}
+            {%- set built_methods.abstract = built_methods.abstract + built_method + '<BR ALIGN="LEFT"/>' -%}
+            {%- else -%}
+            {%- set built_methods.concrete = built_methods.concrete + built_method + '<BR ALIGN="LEFT"/>' -%}
             {%- endif -%}
-            {%- if built_methods.concrete -%}
-            <TR>
-                <TD><I>Methods</I></TD>
-                <TD align="left">
-                {{-built_methods.concrete}}
-                </TD>
-            </TR>
-            {%- endif -%}
-            {%- endif -%}
+        {%- endfor -%}
+            {# ABSTRACT #}
+        {%- if built_methods.abstract -%}
+        <TR>
+            <TD><I>Abstract Methods</I></TD>
+            <TD align="left">
+            {{-built_methods.abstract-}}
+            </TD>
+        </TR>
+        {%- endif -%}
+            {# CONCRETE #}
+        {%- if built_methods.concrete -%}
+        <TR>
+            <TD><I>Methods</I></TD>
+            <TD align="left">
+            {{-built_methods.concrete}}
+            </TD>
+        </TR>
+        {%- endif -%}
+        {%- endif -%}
         </TABLE>
     >
 ]; /* End {{class.name}} */
